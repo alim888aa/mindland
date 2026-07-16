@@ -15,7 +15,7 @@ Use the current phase README as the map. It should show the destination, boundar
 
 ## Clear uncertainty
 
-Interview the user conversationally. Ask no more than three related questions at a time and explain unfamiliar choices simply.
+Interview the user conversationally. During V1 planning, ask five related questions at a time unless the user requests a different amount. Explain unfamiliar choices simply.
 
 Ask before settling product, visual, or architectural decisions. Record lasting choices and their reasoning in `docs/adr/`. Keep uncertain choices clearly marked as open questions until the user decides.
 

@@ -8,11 +8,11 @@ Depends on: Build daily check-ins
 
 ## Outcome
 
-Translate recorded activity into visible positive nodes, accumulated negative points, rocks, gradual sinking, and possible resurfacing.
+Translate recorded activity into visible positive nodes, expanding land, richer terrain features, accumulated negative points, rocks, gradual sinking, and possible resurfacing.
 
 ## Done when
 
-The approved formulas are implemented independently from rendering, tested against agreed examples, and reflected clearly on the island terrain.
+The approved formulas are implemented independently from rendering, tested against agreed examples, and reflected through island area, trees, hills, paths, buildings, rocks, and water level.
 
 ## Result
 

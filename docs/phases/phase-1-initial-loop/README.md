@@ -2,11 +2,11 @@
 
 ## Destination
 
-An iPhone user can sign in, complete an AI interview, receive their first islands, record a later day through either conversational or structured check-in, see the islands change, and inspect a useful history or summary.
+An iPhone user can sign in with Apple or email/password, complete an AI interview, receive their first small islands, record a later day through either conversational or structured check-in, see the islands grow or gain rocks, and inspect a useful history or summary.
 
 ## Included
 
-This phase covers accounts, Convex persistence, the first interview, initial island creation, AI check-ins, structured island check-ins, saved AI conversations, activity records, positive growth, rocks, sinking and resurfacing rules, island history, and a coherent end-to-end demo.
+This phase covers Clerk accounts, Convex persistence, the first interview, initial island creation and reveal, an expandable two-dimensional map, AI check-ins, structured island check-ins, saved AI conversations, activity records, land and feature growth, rocks, sinking and resurfacing rules, island history, and a coherent end-to-end demo.
 
 ## Outside this phase
 
@@ -22,13 +22,15 @@ The 3D map prototype exists. The product loop tasks are planned and have not sta
 
 ## Tasks
 
-[Build the account and Convex foundation](tasks/00-build-account-and-convex-foundation.md)
+[Build the Clerk and Convex foundation](tasks/00-build-clerk-and-convex-foundation.md)
 
 [Define the life-map domain](tasks/01-define-life-map-domain.md)
 
 [Build the initial AI interview](tasks/02-build-initial-ai-interview.md)
 
 [Create initial islands](tasks/03-create-initial-islands.md)
+
+[Build the expandable world map](tasks/03a-build-expandable-world-map.md)
 
 [Build daily check-ins](tasks/04-build-daily-check-ins.md)
 
@@ -40,4 +42,4 @@ The 3D map prototype exists. The product loop tasks are planned and have not sta
 
 ## Open questions
 
-The account sign-in method, Convex schema, AI response format, privacy boundaries, exact rock formula, and remaining screen details still need user decisions.
+The Convex schema, AI response format, privacy boundaries, exact rock formula, correction policy, map expansion limits, and remaining screen details still need user decisions.
