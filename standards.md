@@ -20,9 +20,11 @@ Keep AI interpretation separate from confirmed user history. Preserve the userâ€
 
 Use one source of truth for islands, activities, nodes, rocks, and their relationships. Ask the user before choosing persistence, backend, authentication, or AI-provider architecture.
 
+Let the AI choose semantic visual details from an approved catalogue. Keep asset selection and rendering deterministic so the same stored choice can be reproduced later.
+
 ## Design
 
-The main map should feel like a living archipelago with four islands visible in the initial viewport. Territory borders remain subtle. Tapping an island zooms into its territory.
+The main map should feel like a living expandable world with the userâ€™s initial small islands visible together. Territory borders remain subtle. Tapping an island zooms into its territory.
 
 Prioritize legibility, responsive touch targets, smooth motion, and stable frame pacing. Visual richness should degrade gracefully on weaker devices.
 

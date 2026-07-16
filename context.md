@@ -34,13 +34,15 @@ Repeated activity may suggest a more specific island. For example, Guitar can em
 
 ## Growth and decline rules
 
-Each completed positive activity normally creates one positive node and one lifetime positive point on every affected island. Each node adds a small visible detail chosen from the activity’s context and the island’s purpose. Every five positive points also expands the land or adds a larger feature.
+Each island receives at most one summarized positive node and one lifetime positive point per calendar day. That node combines every supportive activity recorded for that island on that day. Duration and frequency remain in the underlying activity records but do not multiply growth points.
 
-Each harmful activity contributes negative points. Every five accumulated negative points creates one visible rock.
+Each daily positive node adds a small visible detail chosen from a prepared visual catalogue using the activity context and island purpose. Every five positive points also expands the land or adds a larger feature.
+
+Each island receives at most one negative point per calendar day that contains harmful activity for that topic. Every five accumulated negative points creates one visible rock.
 
 An island’s long-term survival favors lifetime progress. Sinking compares its visible rock count with its lifetime positive-point count. For example, an island with twenty lifetime positive points remains above water until it reaches twenty rocks, even though each rock represents five negative points.
 
-A submerged island remains visible as a reminder and can resurface through renewed positive activity.
+A submerged island remains visible as a reminder and resurfaces as soon as its lifetime positive-point count becomes greater than its visible rock count.
 
 The system preserves the original activity entry. Corrections remain visible in history, and an accidental submission can be undone for five minutes.
 

@@ -10,14 +10,16 @@ Daily activities need to produce visible progress without making land growth or 
 
 ## Decision
 
-Give each positive activity one node and one lifetime positive point on every affected island. Add a small contextual visual detail for each positive node. Every five positive points expands land or adds a larger contextual feature.
+Give each island at most one summarized positive node and one lifetime positive point per calendar day. Combine all supportive activities for that island and day inside the node while preserving the underlying activity details. Duration and repeated occurrences do not multiply points.
 
-Accumulate negative points separately. Every five negative points creates one visible rock. Preserve the original activity entry, retain corrections in history, and allow accidental submissions to be undone for five minutes.
+Give each island at most one negative point per calendar day containing harmful activity for that topic. Every five negative points creates one visible rock. Preserve the original activity entry, retain corrections in history, and allow accidental submissions to be undone for five minutes.
+
+A submerged island resurfaces as soon as its lifetime positive-point count becomes greater than its visible rock count.
 
 ## Reason
 
-Five-point milestones keep larger visual changes gradual while every completed action still leaves a visible trace. Preserving corrections protects the map from AI misunderstandings without hiding the history.
+Daily summaries prevent repetitive activity from flooding the map with nodes while the underlying history stays detailed. Five-point milestones keep larger visual changes gradual. Preserving corrections protects the map from AI misunderstandings without hiding the history.
 
 ## Consequences
 
-The AI must describe the meaning of an activity well enough for the visual system to select a fitting detail. The domain model must keep lifetime positive points, pending negative points, visible rocks, correction history, and undo timing separate.
+The domain model must aggregate by island and user-local calendar day while keeping lifetime positive points, pending negative points, visible rocks, correction history, and undo timing separate.
