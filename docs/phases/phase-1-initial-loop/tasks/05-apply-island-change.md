@@ -12,7 +12,7 @@ Translate recorded activity into visible positive nodes, expanding land, richer 
 
 ## Done when
 
-The approved formulas are implemented independently from rendering, tested against agreed examples, and reflected through island area, trees, hills, paths, buildings, rocks, and water level.
+Each positive node adds a small contextual detail. Every five positive points expands land or adds a larger contextual feature. Every five negative points creates a rock. These rules are implemented independently from rendering, tested against agreed examples, and reflected through island area, trees, hills, paths, buildings, rocks, and water level.
 
 ## Result
 

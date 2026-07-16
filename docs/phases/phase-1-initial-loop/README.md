@@ -42,4 +42,4 @@ The 3D map prototype exists. The product loop tasks are planned and have not sta
 
 ## Open questions
 
-The Convex schema, AI response format, privacy boundaries, exact rock formula, correction policy, map expansion limits, and remaining screen details still need user decisions.
+The Convex schema, AI response format, privacy boundaries, sinking and resurfacing formulas, map expansion limits, and remaining screen details still need user decisions.

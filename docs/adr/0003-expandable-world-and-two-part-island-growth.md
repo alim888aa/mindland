@@ -10,7 +10,7 @@ V1 begins with much smaller islands and may add more islands over time. A fixed 
 
 ## Decision
 
-Use a bounded map that supports movement in both directions and expands its outer perimeter as more space is needed. Start islands small. Grow them through both increased land area and richer contents such as trees, hills, paths, and buildings.
+Use a bounded map that supports movement in both directions and expands its outer perimeter before an island or territory approaches the available edge. Start islands small. Grow them through both increased land area and richer contents such as trees, hills, paths, and buildings.
 
 ## Reason
 

@@ -22,7 +22,7 @@ Each island has a zoomed terrain view plus a summary and history. Related island
 
 ## World and territory behavior
 
-The map is a bounded open world that the user can move through horizontally and vertically. Its outer perimeter expands when new islands require more space.
+The map is a bounded open world that the user can move through horizontally and vertically. Its outer perimeter expands before an island or territory approaches the available edge.
 
 Every island owns a territory. Related new islands appear near one another, and adding them can shift existing islands and territory boundaries. Cross-island activity creates separate nodes inside each affected island, placed toward their shared boundary. Repeated overlap may eventually create a sandbar, while one-off overlap does not.
 
@@ -34,17 +34,21 @@ Repeated activity may suggest a more specific island. For example, Guitar can em
 
 ## Growth and decline rules
 
-Each completed positive activity normally creates one positive node and one lifetime positive point on every affected island. Negative activity accumulates separately. Reaching the chosen negative threshold creates one visible rock.
+Each completed positive activity normally creates one positive node and one lifetime positive point on every affected island. Each node adds a small visible detail chosen from the activity’s context and the island’s purpose. Every five positive points also expands the land or adds a larger feature.
 
-An island’s long-term survival favors lifetime progress. Sinking compares its visible rock count with its lifetime positive-point count. For example, an island with twenty lifetime positive points remains above water until it reaches twenty rocks, even though each rock represents several negative points. The negative-points-per-rock threshold is still undecided.
+Each harmful activity contributes negative points. Every five accumulated negative points creates one visible rock.
+
+An island’s long-term survival favors lifetime progress. Sinking compares its visible rock count with its lifetime positive-point count. For example, an island with twenty lifetime positive points remains above water until it reaches twenty rocks, even though each rock represents five negative points.
 
 A submerged island remains visible as a reminder and can resurface through renewed positive activity.
 
+The system preserves the original activity entry. Corrections remain visible in history, and an accidental submission can be undone for five minutes.
+
 ## Open product questions
 
-The exact negative-points threshold that creates one rock still needs a decision. The detailed sinking and resurfacing formulas also need to be written and tested against examples.
+The detailed sinking and resurfacing formulas still need to be written and tested against examples.
 
-The exact interview prompts, structured questionnaire, island-history experience, Convex schema, AI architecture, correction policy, and map expansion limits remain to be designed.
+The exact interview prompts, structured questionnaire, island-history experience, Convex schema, AI architecture, and map expansion limits remain to be designed.
 
 ## Current status
 
