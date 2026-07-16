@@ -2,25 +2,27 @@
 
 ## Destination
 
-A new user can complete an AI interview, receive their first islands, record a later day through either conversational or structured check-in, see the islands change, and inspect a useful history or summary.
+An iPhone user can sign in, complete an AI interview, receive their first islands, record a later day through either conversational or structured check-in, see the islands change, and inspect a useful history or summary.
 
 ## Included
 
-This phase covers the first interview, initial island creation, AI check-ins, structured island check-ins, activity records, positive growth, rocks, sinking and resurfacing rules, island history, and a coherent end-to-end demo.
+This phase covers accounts, Convex persistence, the first interview, initial island creation, AI check-ins, structured island check-ins, saved AI conversations, activity records, positive growth, rocks, sinking and resurfacing rules, island history, and a coherent end-to-end demo.
 
 ## Outside this phase
 
-Archipelagos, user-purchased decorations, social features, production monetization, and a broad integrations ecosystem remain for later phases.
+Android support, AI conversation-history browsing, archipelagos, user-purchased decorations, social features, production monetization, and a broad integrations ecosystem remain for later phases.
 
 ## Finish line
 
-The complete loop works on the target mobile build with persistent sample user data. The important product rules have automated tests, and the full demo path has been manually verified.
+The complete loop works on an iPhone build with a real account and persistent user data in Convex. The important product rules have automated tests, and the full demo path has been manually verified.
 
 ## Progress
 
 The 3D map prototype exists. The product loop tasks are planned and have not started.
 
 ## Tasks
+
+[Build the account and Convex foundation](tasks/00-build-account-and-convex-foundation.md)
 
 [Define the life-map domain](tasks/01-define-life-map-domain.md)
 
@@ -38,4 +40,4 @@ The 3D map prototype exists. The product loop tasks are planned and have not sta
 
 ## Open questions
 
-The persistence and backend approach, AI response format, privacy boundaries, exact rock formula, and detailed screen flow still need user decisions.
+The account sign-in method, Convex schema, AI response format, privacy boundaries, exact rock formula, and remaining screen details still need user decisions.

@@ -12,7 +12,7 @@ Connect the phase into one reliable, understandable, and visually coherent mobil
 
 ## Done when
 
-The complete demo path works from a clean install, automated checks pass, the target device performance is measured, and visual comparison evidence is recorded.
+The complete demo path works from a clean iPhone install, automated checks pass, device performance is measured, and visual comparison evidence is recorded.
 
 ## Result
 
