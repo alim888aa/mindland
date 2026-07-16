@@ -1,0 +1,5 @@
+interface:
+  display_name: "Wayfinder"
+  short_description: "Map uncertain work into local phases and tasks"
+policy:
+  allow_implicit_invocation: false
