@@ -18,7 +18,7 @@ The complete loop works on an iPhone build with a real account and persistent us
 
 ## Progress
 
-The 3D map prototype and native daily check-in shell exist. The shell has local chat and questionnaire interactions; AI interpretation, persistence, and scored map changes remain to be built.
+The 3D map now uses variable world coordinates, smaller starting islands, generated territories, camera-following labels, an expandable perimeter, and bounded two-axis movement. The native daily check-in shell has local chat and questionnaire interactions. Its next visual direction has been researched and awaits user selection; AI interpretation, persistence, and scored map changes remain to be built.
 
 ## Tasks
 

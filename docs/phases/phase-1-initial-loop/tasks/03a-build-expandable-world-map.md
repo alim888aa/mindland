@@ -36,4 +36,4 @@ The reviewer fixes were inspected locally. A full TypeScript check and iOS expor
 
 ## Commit
 
-Pending.
+`c235451` — `feat: make island world expandable`

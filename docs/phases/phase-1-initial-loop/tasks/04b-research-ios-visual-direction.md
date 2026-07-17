@@ -69,3 +69,7 @@ For implementation, use Expo 57's native `GlassView` and `GlassContainer`, or th
 [Expo SDK 57: SwiftUI modifiers](https://docs.expo.dev/versions/v57.0.0/sdk/ui/swift-ui/modifiers/) exposes native `glassEffect` configuration for SwiftUI-backed views.
 
 [MacRumors' iOS 26 Liquid Glass overview](https://www.macrumors.com/guide/ios-26-liquid-glass/) records Apple's early increases in opacity after readability feedback, supporting a restrained approach over bright or busy backgrounds.
+
+## Commit
+
+`658cb2d` — `docs: research iOS visual direction`
