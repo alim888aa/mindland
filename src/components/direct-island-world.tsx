@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, type ReactNode } from "react";
 import {
   PanResponder,
   PixelRatio,
@@ -17,10 +17,15 @@ import {
 } from "../data/islands";
 import { createIslandScene, type IslandScene } from "../lib/island-scene-builder";
 import { makeWebGPURenderer } from "../lib/make-webgpu-renderer";
+import {
+  getCameraPanLimits,
+  type MapPanLimits,
+} from "../lib/map-camera-policy";
 import { publishWorldView, type IslandScreenPoint } from "../lib/world-view-store";
 
 type DirectIslandWorldProps = {
   selectedIsland: IslandId | null;
+  children?: ReactNode;
 };
 
 type PanPoint = {
@@ -28,14 +33,12 @@ type PanPoint = {
   z: number;
 };
 
-// Gesture speed and visible camera footprint are prototype tuning values. They
-// can move into a camera policy once the world is tested with more island counts.
+// Gesture speed remains a prototype tuning value. The visible camera footprint
+// is projected from the real overview camera in map-camera-policy.
 const CAMERA_PROTOTYPE = {
   worldUnitsPerPoint: 0.0085,
   inertia: 0.52,
   followStrength: 0.16,
-  visibleHalfWidth: 1.45,
-  visibleHalfDepth: 2.55,
   overviewTargetZ: 0.45,
 } as const;
 
@@ -81,13 +84,20 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
   private desiredPan: PanPoint = { x: 0, z: 0 };
   private currentPan: PanPoint = { x: 0, z: 0 };
   private appliedPan: PanPoint = { x: 0, z: 0 };
+  private panLimits: MapPanLimits = {
+    minimumX: 0,
+    maximumX: 0,
+    minimumZ: 0,
+    maximumZ: 0,
+  };
   private lastScreenPoints: Partial<Record<IslandId, IslandScreenPoint>> = {};
   private lastMoving = false;
   private lastSelectedIsland: IslandId | null = null;
   private selectionLookTarget = new THREE.Vector3(0, 0.2, CAMERA_PROTOTYPE.overviewTargetZ);
 
   private panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: (_, gesture) =>
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponderCapture: (_, gesture) =>
       !this.props.selectedIsland && Math.abs(gesture.dx) + Math.abs(gesture.dy) > 5,
     onPanResponderGrant: () => {
       this.panStart = { ...this.desiredPan };
@@ -108,6 +118,7 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
     onPanResponderTerminate: () => {
       this.panStart = { ...this.desiredPan };
     },
+    onPanResponderTerminationRequest: () => false,
   });
 
   componentDidMount() {
@@ -121,26 +132,10 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
     this.renderer?.dispose();
   }
 
-  private getPanLimits = () => ({
-    minimumX:
-      WORLD_LAYOUT.bounds.minX + CAMERA_PROTOTYPE.visibleHalfWidth,
-    maximumX:
-      WORLD_LAYOUT.bounds.maxX - CAMERA_PROTOTYPE.visibleHalfWidth,
-    minimumZ:
-      WORLD_LAYOUT.bounds.minZ +
-      CAMERA_PROTOTYPE.visibleHalfDepth -
-      CAMERA_PROTOTYPE.overviewTargetZ,
-    maximumZ:
-      WORLD_LAYOUT.bounds.maxZ -
-      CAMERA_PROTOTYPE.visibleHalfDepth -
-      CAMERA_PROTOTYPE.overviewTargetZ,
-  });
-
   private setDesiredPan = (x: number, z: number) => {
-    const limits = this.getPanLimits();
     this.desiredPan = {
-      x: clamp(x, limits.minimumX, limits.maximumX),
-      z: clamp(z, limits.minimumZ, limits.maximumZ),
+      x: clamp(x, this.panLimits.minimumX, this.panLimits.maximumX),
+      z: clamp(z, this.panLimits.minimumZ, this.panLimits.maximumZ),
     };
   };
 
@@ -165,22 +160,6 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
         object.visible = false;
       }
     });
-
-    for (const island of ISLANDS) {
-      const group = world.scene.children.find(
-        (child) =>
-          child instanceof THREE.Group &&
-          Math.abs(child.position.x - island.position[0]) < 0.001 &&
-          Math.abs(child.position.z - island.position[2]) < 0.001,
-      );
-      if (group) {
-        group.scale.set(
-          island.overviewScale,
-          island.overviewScale,
-          island.overviewScale * 0.92,
-        );
-      }
-    }
 
     const territoryMaterial = new THREE.MeshBasicMaterial({
       color: "#d7fff8",
@@ -240,7 +219,7 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
     for (const island of ISLANDS) {
       const projected = new THREE.Vector3(
         island.position[0],
-        0.78 * island.overviewScale,
+        0.78 * island.startingLandScale,
         island.position[2],
       ).project(camera);
       const point = {
@@ -285,6 +264,12 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
       return;
     }
     this.configureScene(world);
+    if (this.viewport.width > 0 && this.viewport.height > 0) {
+      world.camera.aspect = this.viewport.width / this.viewport.height;
+      world.camera.updateProjectionMatrix();
+    }
+    this.panLimits = getCameraPanLimits(world.camera, WORLD_LAYOUT.bounds);
+    this.setDesiredPan(0, 0);
     const renderer = makeWebGPURenderer(context);
     this.world = world;
     this.renderer = renderer;
@@ -314,7 +299,11 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
       if (this.props.selectedIsland) {
         const island = ISLAND_BY_ID[this.props.selectedIsland];
         this.selectionLookTarget.lerp(
-          new THREE.Vector3(island.position[0], 0.55, island.position[2]),
+          new THREE.Vector3(
+            island.position[0],
+            0.38 * island.startingLandScale,
+            island.position[2],
+          ),
           0.075,
         );
         world.camera.lookAt(this.selectionLookTarget);
@@ -357,6 +346,7 @@ export class DirectIslandWorld extends Component<DirectIslandWorldProps> {
         style={StyleSheet.absoluteFill}
       >
         <Canvas ref={this.setCanvas} style={styles.canvas} />
+        {this.props.children}
       </View>
     );
   }

@@ -111,19 +111,6 @@ const addPalm = (
   parent.add(tree);
 };
 
-const addRocks = (parent: THREE.Group, radius: number, color: string) => {
-  for (let index = 0; index < 11; index += 1) {
-    const angle = (Math.PI * 2 * index) / 11 + 0.19;
-    const rock = mesh(
-      new THREE.DodecahedronGeometry(0.1 + (index % 3) * 0.025, 0),
-      standard(index % 2 ? color : "#8e8974"),
-      [Math.cos(angle) * radius * 0.86, 0.65, Math.sin(angle) * radius * 0.8],
-    );
-    rock.scale.set(1, 0.85 + (index % 2) * 0.25, 0.9);
-    parent.add(rock);
-  }
-};
-
 const addFlowers = (parent: THREE.Group, seed: number, radius: number, color: string) => {
   const points = createDecorationPoints(seed + 101, 10, radius);
   points.forEach((point, index) => {
@@ -256,7 +243,11 @@ const addLearningFeatures = (group: THREE.Group, island: IslandDefinition) => {
 const buildIsland = (island: IslandDefinition) => {
   const group = new THREE.Group();
   group.position.set(...island.position);
-  group.scale.z = 0.92;
+  group.scale.set(
+    island.startingLandScale,
+    island.startingLandScale,
+    island.startingLandScale * 0.92,
+  );
 
   const foam = mesh(
     createTerrainGeometry(island.radius * 1.1, island.radius * 1.1, 0.035, island.seed + 13),
@@ -285,26 +276,6 @@ const buildIsland = (island: IslandDefinition) => {
     [0, 0.69, 0],
   );
   group.add(foam, rock, sand, top);
-  addRocks(group, island.radius, island.rockColor);
-
-  const decorations = createDecorationPoints(island.seed, island.density, island.radius);
-  decorations.forEach((point, index) => {
-    const position: [number, number, number] = [point.x, 0.77, point.z];
-    if (island.treeStyle === "blossom") {
-      addBlossom(group, position, point.scale * 0.72);
-    } else if (island.treeStyle === "palm") {
-      addPalm(group, position, point.scale * 0.66, point.rotation);
-    } else if (island.treeStyle === "mixed" && index % 4 === 0) {
-      addBroadleaf(group, position, point.scale * 0.48);
-    } else {
-      addPine(group, position, point.scale * 0.74, index % 3 ? "#50763f" : "#708d45");
-    }
-  });
-
-  if (island.id === "health") addHealthFeatures(group, island);
-  if (island.id === "relationships") addRelationshipFeatures(group, island);
-  if (island.id === "work") addWorkFeatures(group);
-  if (island.id === "learning") addLearningFeatures(group, island);
 
   return group;
 };
@@ -400,8 +371,17 @@ export const createIslandScene = async (width: number, height: number): Promise<
   const update = (time: number, selectedIsland: IslandId | null) => {
     if (selectedIsland) {
       const island = ISLANDS.find((value) => value.id === selectedIsland)!;
-      desiredPosition.set(island.position[0], 3.95, island.position[2] + 3.25);
-      desiredTarget.set(island.position[0], 0.55, island.position[2]);
+      const visibleRadius = island.radius * island.startingLandScale;
+      desiredPosition.set(
+        island.position[0],
+        1.85 + visibleRadius * 0.85,
+        island.position[2] + 1.45 + visibleRadius * 0.85,
+      );
+      desiredTarget.set(
+        island.position[0],
+        0.38 * island.startingLandScale,
+        island.position[2],
+      );
     } else {
       desiredPosition.copy(overviewPosition);
       desiredTarget.copy(overviewTarget);

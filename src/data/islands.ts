@@ -13,7 +13,7 @@ type IslandVisualDefinition = {
   relatedTo: readonly IslandId[];
   radius: number;
   territoryRadius: number;
-  overviewScale: number;
+  startingLandScale: number;
   seed: number;
   topColor: string;
   sandColor: string;
@@ -36,7 +36,7 @@ const INITIAL_ISLANDS: IslandVisualDefinition[] = [
     relatedTo: ["relationships"],
     radius: 1.27,
     territoryRadius: 0.92,
-    overviewScale: 0.64,
+    startingLandScale: 0.42,
     seed: 17,
     topColor: "#88a950",
     sandColor: "#d8c789",
@@ -53,7 +53,7 @@ const INITIAL_ISLANDS: IslandVisualDefinition[] = [
     relatedTo: ["health"],
     radius: 1.12,
     territoryRadius: 0.88,
-    overviewScale: 0.66,
+    startingLandScale: 0.42,
     seed: 29,
     topColor: "#b88a63",
     sandColor: "#e1bf89",
@@ -70,7 +70,7 @@ const INITIAL_ISLANDS: IslandVisualDefinition[] = [
     relatedTo: ["learning"],
     radius: 0.91,
     territoryRadius: 0.82,
-    overviewScale: 0.69,
+    startingLandScale: 0.42,
     seed: 43,
     topColor: "#829953",
     sandColor: "#cdbf8c",
@@ -87,7 +87,7 @@ const INITIAL_ISLANDS: IslandVisualDefinition[] = [
     relatedTo: ["work"],
     radius: 0.82,
     territoryRadius: 0.79,
-    overviewScale: 0.71,
+    startingLandScale: 0.42,
     seed: 61,
     topColor: "#bca76b",
     sandColor: "#ead39a",

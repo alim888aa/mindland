@@ -14,13 +14,14 @@ export default function App() {
   return (
     <View style={{ flex: 1, backgroundColor: "#73d4da" }}>
       <StatusBar style="dark" />
-      <DirectIslandWorld selectedIsland={selectedIsland} />
-      <MapOverlay
-        selectedIsland={selectedIsland}
-        onSelect={setSelectedIsland}
-        onClear={() => setSelectedIsland(null)}
-        onCheckIn={() => setCheckInOpen(true)}
-      />
+      <DirectIslandWorld selectedIsland={selectedIsland}>
+        <MapOverlay
+          selectedIsland={selectedIsland}
+          onSelect={setSelectedIsland}
+          onClear={() => setSelectedIsland(null)}
+          onCheckIn={() => setCheckInOpen(true)}
+        />
+      </DirectIslandWorld>
       <CheckInModal
         visible={checkInOpen}
         onClose={() => setCheckInOpen(false)}

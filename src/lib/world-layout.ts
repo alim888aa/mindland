@@ -58,8 +58,8 @@ export const getMinimumTerritoryClearance = <Id extends string>(
 // of product/domain data until the map has been tested with more island counts.
 export const WORLD_LAYOUT_PROTOTYPE = {
   edgePadding: 1.45,
-  minimumWidth: 7.2,
-  minimumDepth: 8.4,
+  minimumWidth: 9.2,
+  minimumDepth: 16,
   collisionGap: 0.48,
   relatedDistance: 2.1,
   layoutPasses: 56,
