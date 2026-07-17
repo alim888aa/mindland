@@ -34,4 +34,4 @@ The full TypeScript checker remains impractically slow on the repository's exist
 
 ## Commit
 
-Pending.
+`a06b063` — `feat: prototype native daily check-ins`
