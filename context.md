@@ -8,7 +8,9 @@ Mindland is a mobile self-management app that turns a person’s goals and daily
 
 V1 is an iPhone-focused hackathon demo of the complete main loop. Clerk provides accounts through Apple and email/password sign-in. Convex stores persistent app data.
 
-The first AI interview is an adaptive conversation, with roughly five to twelve messages as a soft target. It learns what matters to the user and automatically creates roughly three to five initial islands. Broad interests are split into the specific islands that the user actually cares about. For example, Health can create Fitness, Nutrition, and Sleep islands, which may later form a Health archipelago. The user then sees an island reveal where they can rename or remove them. Later conversations may discover more islands, but the app asks permission before creating them.
+The first AI interview opens with a broad question such as “What parts of your life would you like to grow?” It continues as an adaptive conversation, with roughly five to twelve messages as a soft target. It creates only the meaningful islands it actually discovers, typically three to five but sometimes fewer.
+
+Broad interests are split into the specific islands that the user actually cares about. For example, Health can create Fitness, Nutrition, and Sleep islands, which may later form a Health archipelago. V1 displays the specific islands without a visible Health umbrella. The user then sees an island reveal where they can rename or remove them. Later conversations may discover more islands, but the app asks permission before creating them.
 
 Every activity belongs to its most specific island or islands. An activity such as running with a friend contributes to that day’s summarized node on Fitness and that day’s summarized node on Relationships. Those nodes stay inside their own territories and appear near the shared border.
 

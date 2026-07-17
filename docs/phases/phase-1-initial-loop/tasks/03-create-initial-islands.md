@@ -12,7 +12,7 @@ Turn the interview result into the user’s first small, specific islands, place
 
 ## Done when
 
-The first islands begin with no completed-activity nodes, persist, render at their small starting stage, retain their purpose and source context, can be renamed or removed during the reveal, and can be opened from the map.
+The first islands begin with no completed-activity nodes, persist, render at their small starting stage, retain their purpose and source context, can be renamed or removed during the reveal, and can be opened from the map. V1 shows no broad umbrella island above them.
 
 ## Result
 

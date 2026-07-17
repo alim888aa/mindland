@@ -22,7 +22,7 @@ A submerged island resurfaces as soon as its lifetime positive-point count becom
 
 ## Reason
 
-Daily summaries prevent repetitive activity from flooding the map with nodes while the underlying history stays detailed. Five-point milestones keep larger visual changes gradual. Preserving corrections protects the map from AI misunderstandings without hiding the history.
+Daily summaries prevent repetitive activity from flooding the map with nodes while the underlying history stays detailed. The asymmetric weighting is intentional: a supportive day adds one lifetime point, while five harmful days are needed to create one equally weighted rock. This favors lifetime growth. Preserving corrections protects the map from AI misunderstandings without hiding the history.
 
 ## Consequences
 
