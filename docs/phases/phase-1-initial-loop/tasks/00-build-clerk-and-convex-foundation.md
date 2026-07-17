@@ -1,8 +1,8 @@
 # Build the Clerk and Convex foundation
 
-Status: planned
+Status: in-progress
 
-Owner: unassigned
+Owner: primary agent
 
 ## Outcome
 

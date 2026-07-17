@@ -18,7 +18,7 @@ The complete loop works on an iPhone build with a real account and persistent us
 
 ## Progress
 
-The 3D map now uses variable world coordinates, smaller starting islands, generated territories, camera-following labels, an expandable perimeter, and bounded two-axis movement. The native daily check-in shell has local chat and questionnaire interactions. Its next visual direction has been researched and awaits user selection; AI interpretation, persistence, and scored map changes remain to be built.
+The 3D map now uses variable world coordinates, smaller starting islands, generated territories, camera-following labels, an expandable perimeter, and bounded two-axis movement. A follow-up fix is making that movement reachable and the zero-activity islands genuinely small and sparse. The native daily check-in shell has local chat and questionnaire interactions. Lagoon Immersion is selected and now has a measured rendering and fallback policy; AI interpretation, persistence, and scored map changes remain to be built.
 
 ## Tasks
 
@@ -32,17 +32,23 @@ The 3D map now uses variable world coordinates, smaller starting islands, genera
 
 [Build the expandable world map](tasks/03a-build-expandable-world-map.md)
 
+[Fix map navigation and starting growth](tasks/03b-fix-map-navigation-and-starting-growth.md)
+
 [Build daily check-ins](tasks/04-build-daily-check-ins.md)
 
 [Prototype the native check-in shell](tasks/04a-prototype-native-check-in-shell.md)
 
 [Research the iOS visual direction](tasks/04b-research-ios-visual-direction.md)
 
+[Research Lagoon Immersion performance](tasks/04c-research-lagoon-performance.md)
+
 [Apply growth, rocks, sinking, and resurfacing](tasks/05-apply-island-change.md)
 
 [Build island history and summary](tasks/06-build-island-history.md)
 
 [Verify and polish the complete loop](tasks/07-verify-demo-loop.md)
+
+[Review codebase architecture](tasks/08-review-codebase-architecture.md)
 
 ## Open questions
 
