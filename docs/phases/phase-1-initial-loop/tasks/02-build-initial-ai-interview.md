@@ -12,7 +12,7 @@ Create a first-use conversation that begins with a broad invitation, learns what
 
 ## Done when
 
-The interview opens broadly, adapts for roughly five to twelve messages, feels conversational, preserves the user’s words, produces validated structured output, avoids inventing filler islands, and handles unclear answers safely.
+The interview opens broadly, asks one question per message, adapts for roughly five to twelve messages, feels conversational, preserves the user’s words, produces validated structured output, avoids inventing filler islands, handles unclear answers safely, and creates no scored activity.
 
 ## Result
 
