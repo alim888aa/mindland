@@ -12,7 +12,9 @@ The onboarding conversation may discuss goals, struggles, past behavior, and eve
 
 Use onboarding only to discover islands, their purposes, and their initial visual themes. Create no activity nodes, positive points, negative points, or rocks from the onboarding conversation.
 
-After creation, reveal the islands through short guided highlights. Allow rename and remove during the reveal. Do not allow adding an island there; later conversations may propose new islands through the established permission flow.
+After sign-in, explain Mindland in one sentence and begin the interview immediately. After creation, reveal the islands through short guided highlights that advance automatically without a Next button. Keep a Skip control for ending the guide. Allow rename and remove during the reveal while requiring at least one island to remain. Do not allow adding an island there; later conversations may propose new islands through the established permission flow.
+
+After the reveal, land on the map and let the user explore before they choose Check in.
 
 ## Reason
 

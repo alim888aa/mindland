@@ -8,11 +8,13 @@ Mindland is a mobile self-management app that turns a person’s goals and daily
 
 V1 is an iPhone-focused hackathon demo of the complete main loop. Clerk provides accounts through Apple and email/password sign-in. Convex stores persistent app data.
 
-The first AI interview opens with a broad question such as “What parts of your life would you like to grow?” It continues as an adaptive conversation, with roughly five to twelve messages as a soft target. It creates only the meaningful islands it actually discovers, typically three to five but sometimes fewer.
+After sign-in, the AI explains Mindland in one sentence and immediately opens with a broad question such as “What parts of your life would you like to grow?” The interview continues as an adaptive conversation, with roughly five to twelve messages as a soft target. It creates only the meaningful islands it actually discovers, typically three to five but sometimes fewer.
 
 The AI normally asks one question per message. Onboarding establishes islands and their purposes but does not create activity nodes, positive points, negative points, or rocks.
 
-Broad interests are split into the specific islands that the user actually cares about. For example, Health can create Fitness, Nutrition, and Sleep islands, which may later form a Health archipelago. V1 displays the specific islands without a visible Health umbrella. The user then sees a guided reveal that highlights each island and briefly explains why it was created. They may rename or remove an island, but cannot add one during the reveal. Later conversations may discover more islands, but the app asks permission before creating them.
+Broad interests are split into the specific islands that the user actually cares about. For example, Health can create Fitness, Nutrition, and Sleep islands, which may later form a Health archipelago. V1 displays the specific islands without a visible Health umbrella. The user then sees a guided reveal that highlights each island, briefly explains why it was created, and advances automatically without a Next button. A Skip control can end the guide. They may rename or remove an island, but at least one must remain and they cannot add one during the reveal. Later conversations may discover more islands, but the app asks permission before creating them.
+
+After the reveal, the user lands on the map and can explore before choosing Check in.
 
 Every activity belongs to its most specific island or islands. An activity such as running with a friend contributes to that day’s summarized node on Fitness and that day’s summarized node on Relationships. Those nodes stay inside their own territories and appear near the shared border.
 
@@ -56,7 +58,7 @@ The system preserves the original activity entry. Corrections remain visible in 
 
 The detailed sinking and resurfacing formulas still need to be written and tested against examples.
 
-The dedicated pre-interview explanation, exact interview prompts, GPT-5.6 Luna reasoning strategy, structured questionnaire, island-history experience, Convex schema, AI architecture, and map expansion limits remain to be designed.
+The exact interview prompts, structured questionnaire, island-history experience, Convex schema, AI architecture, and map expansion limits remain to be designed.
 
 ## Current status
 
