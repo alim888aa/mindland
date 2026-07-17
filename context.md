@@ -18,7 +18,9 @@ After the reveal, the user lands on the map and can explore before choosing Chec
 
 Every activity belongs to its most specific island or islands. An activity such as running with a friend contributes to that day’s summarized node on Fitness and that day’s summarized node on Relationships. Those nodes stay inside their own territories and appear near the shared border.
 
-The check-in screen follows the original wireframe: island names appear as questionnaire entry points while a text field remains available at the bottom. The user can start typing immediately to talk with the AI, or tap an island to complete its AI-generated structured questionnaire. Both paths create the same underlying activity records and map changes.
+The check-in screen follows the original wireframe: island names appear as questionnaire entry points while a text field remains available at the bottom. The user can start typing immediately to enter a normal AI chat, or tap an island to complete its AI-generated structured questionnaire. Both paths create the same underlying activity records and map changes.
+
+Each island questionnaire contains three to seven full-screen questions. The AI chooses the most suitable input for each question, answers advance automatically, and every question can be skipped. A questionnaire is generated when its island is created and changes only when later conversations reveal something meaningful. Finishing applies the check-in immediately, returns to the island, and animates the new detail.
 
 AI conversations are saved so they can eventually be revisited. A conversation-history screen is useful later but is not required for V1.
 
@@ -58,10 +60,12 @@ The system preserves the original activity entry. Corrections remain visible in 
 
 The detailed sinking and resurfacing formulas still need to be written and tested against examples.
 
-The exact interview prompts, structured questionnaire, island-history experience, Convex schema, AI architecture, and map expansion limits remain to be designed.
+The exact interview prompts, island-history experience, Convex schema, AI architecture, and map expansion limits remain to be designed.
 
 ## Current status
 
-The repository contains an Expo 57 prototype with a procedural 3D map, four distinct islands, territory lines, island zooming, and a visual check-in entry point. The complete user loop and persistent data model are still unbuilt.
+The repository contains an Expo 57 prototype with a procedural 3D map, four distinct islands, territory lines, island zooming, and a NativeWind check-in shell. The shell supports a normal AI-style conversation, island-specific three-to-four question samples, automatic choice advance, Skip, written and numeric inputs, and returning to the completed island. It currently uses local sample responses and does not yet interpret or persist activity.
+
+NativeWind 5 and Tailwind CSS 4 are configured for two-dimensional product screens alongside the existing WebGPU renderer. The complete user loop and persistent data model are still unbuilt.
 
 The current phase is [Phase 1: Initial loop](docs/phases/phase-1-initial-loop/README.md).

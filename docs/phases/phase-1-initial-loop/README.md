@@ -18,7 +18,7 @@ The complete loop works on an iPhone build with a real account and persistent us
 
 ## Progress
 
-The 3D map prototype exists. The product loop tasks are planned and have not started.
+The 3D map prototype and native daily check-in shell exist. The shell has local chat and questionnaire interactions; AI interpretation, persistence, and scored map changes remain to be built.
 
 ## Tasks
 
@@ -33,6 +33,8 @@ The 3D map prototype exists. The product loop tasks are planned and have not sta
 [Build the expandable world map](tasks/03a-build-expandable-world-map.md)
 
 [Build daily check-ins](tasks/04-build-daily-check-ins.md)
+
+[Prototype the native check-in shell](tasks/04a-prototype-native-check-in-shell.md)
 
 [Apply growth, rocks, sinking, and resurfacing](tasks/05-apply-island-change.md)
 

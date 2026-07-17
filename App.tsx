@@ -21,7 +21,14 @@ export default function App() {
         onClear={() => setSelectedIsland(null)}
         onCheckIn={() => setCheckInOpen(true)}
       />
-      <CheckInModal visible={checkInOpen} onClose={() => setCheckInOpen(false)} />
+      <CheckInModal
+        visible={checkInOpen}
+        onClose={() => setCheckInOpen(false)}
+        onQuestionnaireComplete={(islandId) => {
+          setCheckInOpen(false);
+          setSelectedIsland(islandId);
+        }}
+      />
     </View>
   );
 }
