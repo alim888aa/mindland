@@ -12,7 +12,7 @@ Build one check-in screen where the user can type immediately to start an AI con
 
 ## Done when
 
-Both paths support positive and harmful activity, skipped questions, multiple affected islands, original-message preservation, saved AI conversations, visible correction history, a five-minute accidental Undo, and reviewable structured metadata.
+Both paths support positive and harmful activity on the same day, skipped questions, multiple affected islands, repeated check-ins that merge into existing daily summaries, current-day-only logging, original-message preservation, saved AI conversations, visible correction history, a five-minute accidental Undo, and reviewable structured metadata.
 
 ## Result
 

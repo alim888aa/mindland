@@ -8,9 +8,9 @@ Mindland is a mobile self-management app that turns a person’s goals and daily
 
 V1 is an iPhone-focused hackathon demo of the complete main loop. Clerk provides accounts through Apple and email/password sign-in. Convex stores persistent app data.
 
-The first AI interview is an adaptive conversation, with roughly five to twelve messages as a soft target. It learns what matters to the user and automatically creates roughly three to five initial islands. The user then sees an island reveal where they can rename or remove them. Later conversations may discover more islands, but the app asks permission before creating them.
+The first AI interview is an adaptive conversation, with roughly five to twelve messages as a soft target. It learns what matters to the user and automatically creates roughly three to five initial islands. Broad interests are split into the specific islands that the user actually cares about. For example, Health can create Fitness, Nutrition, and Sleep islands, which may later form a Health archipelago. The user then sees an island reveal where they can rename or remove them. Later conversations may discover more islands, but the app asks permission before creating them.
 
-Every activity belongs to its most specific island or islands. An activity such as running with a friend creates one node on Health and one on Relationships. Those nodes stay inside their own territories and appear near the shared border.
+Every activity belongs to its most specific island or islands. An activity such as running with a friend contributes to that day’s summarized node on Fitness and that day’s summarized node on Relationships. Those nodes stay inside their own territories and appear near the shared border.
 
 The check-in screen follows the original wireframe: island names appear as questionnaire entry points while a text field remains available at the bottom. The user can start typing immediately to talk with the AI, or tap an island to complete its AI-generated structured questionnaire. Both paths create the same underlying activity records and map changes.
 
@@ -40,7 +40,9 @@ Each daily positive node adds a small visible detail chosen from a prepared visu
 
 Each island receives at most one negative point per calendar day that contains harmful activity for that topic. Every five accumulated negative points creates one visible rock.
 
-An island’s long-term survival favors lifetime progress. Sinking compares its visible rock count with its lifetime positive-point count. For example, an island with twenty lifetime positive points remains above water until it reaches twenty rocks, even though each rock represents five negative points.
+An island may receive both one positive point and one negative point on the same day. Additional check-ins on that day update the existing daily summaries instead of creating extra nodes or points. V1 accepts activity for the current user-local calendar day only and does not backdate logs.
+
+An island’s long-term survival favors lifetime progress. One visible rock counts the same as one lifetime positive point when evaluating sinking. For example, an island with twenty lifetime positive points remains above water until it reaches twenty rocks, even though creating those rocks requires one hundred negative points.
 
 A submerged island remains visible as a reminder and resurfaces as soon as its lifetime positive-point count becomes greater than its visible rock count.
 
