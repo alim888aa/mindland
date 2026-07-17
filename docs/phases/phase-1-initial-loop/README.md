@@ -36,6 +36,8 @@ The 3D map prototype and native daily check-in shell exist. The shell has local 
 
 [Prototype the native check-in shell](tasks/04a-prototype-native-check-in-shell.md)
 
+[Research the iOS visual direction](tasks/04b-research-ios-visual-direction.md)
+
 [Apply growth, rocks, sinking, and resurfacing](tasks/05-apply-island-change.md)
 
 [Build island history and summary](tasks/06-build-island-history.md)
