@@ -1,35 +1,47 @@
+import {
+  createWorldLayout,
+  type WorldLayoutInput,
+  type WorldPoint,
+} from "../lib/world-layout";
+
 export type IslandId = "health" | "relationships" | "work" | "learning";
 
-export type IslandDefinition = {
+type IslandVisualDefinition = {
   id: IslandId;
   name: string;
-  position: [number, number, number];
+  preferredPosition: WorldPoint;
+  relatedTo: readonly IslandId[];
   radius: number;
+  territoryRadius: number;
+  overviewScale: number;
   seed: number;
   topColor: string;
   sandColor: string;
   rockColor: string;
   accentColor: string;
-  labelTop: `${number}%`;
-  labelLeft: `${number}%`;
   labelRotation: `${number}deg`;
   treeStyle: "pine" | "blossom" | "mixed" | "palm";
   density: number;
 };
 
-export const ISLANDS: IslandDefinition[] = [
+export type IslandDefinition = IslandVisualDefinition & {
+  position: [number, number, number];
+};
+
+const INITIAL_ISLANDS: IslandVisualDefinition[] = [
   {
     id: "health",
     name: "Health",
-    position: [-1.06, 0, -0.42],
+    preferredPosition: { x: -1.18, z: -0.55 },
+    relatedTo: ["relationships"],
     radius: 1.27,
+    territoryRadius: 0.92,
+    overviewScale: 0.64,
     seed: 17,
     topColor: "#88a950",
     sandColor: "#d8c789",
     rockColor: "#7f806e",
     accentColor: "#d5ef99",
-    labelTop: "28%",
-    labelLeft: "15%",
     labelRotation: "-3deg",
     treeStyle: "mixed",
     density: 14,
@@ -37,15 +49,16 @@ export const ISLANDS: IslandDefinition[] = [
   {
     id: "relationships",
     name: "Relationships",
-    position: [1.08, 0, -0.4],
+    preferredPosition: { x: 1.16, z: -0.48 },
+    relatedTo: ["health"],
     radius: 1.12,
+    territoryRadius: 0.88,
+    overviewScale: 0.66,
     seed: 29,
     topColor: "#b88a63",
     sandColor: "#e1bf89",
     rockColor: "#8d7263",
     accentColor: "#ee8f86",
-    labelTop: "31.5%",
-    labelLeft: "57%",
     labelRotation: "3deg",
     treeStyle: "blossom",
     density: 11,
@@ -53,15 +66,16 @@ export const ISLANDS: IslandDefinition[] = [
   {
     id: "work",
     name: "Work",
-    position: [-1.08, 0, 2.65],
+    preferredPosition: { x: -1.1, z: 2.22 },
+    relatedTo: ["learning"],
     radius: 0.91,
+    territoryRadius: 0.82,
+    overviewScale: 0.69,
     seed: 43,
     topColor: "#829953",
     sandColor: "#cdbf8c",
     rockColor: "#74796b",
     accentColor: "#c6d79b",
-    labelTop: "52%",
-    labelLeft: "19%",
     labelRotation: "2deg",
     treeStyle: "pine",
     density: 8,
@@ -69,20 +83,40 @@ export const ISLANDS: IslandDefinition[] = [
   {
     id: "learning",
     name: "Learning",
-    position: [1.17, 0, 2.68],
+    preferredPosition: { x: 1.15, z: 2.27 },
+    relatedTo: ["work"],
     radius: 0.82,
+    territoryRadius: 0.79,
+    overviewScale: 0.71,
     seed: 61,
     topColor: "#bca76b",
     sandColor: "#ead39a",
     rockColor: "#887b68",
     accentColor: "#f0ba67",
-    labelTop: "54.5%",
-    labelLeft: "61%",
     labelRotation: "3deg",
     treeStyle: "palm",
     density: 6,
   },
 ];
+
+export const WORLD_LAYOUT = createWorldLayout(
+  INITIAL_ISLANDS.map(
+    (island): WorldLayoutInput<IslandId> => ({
+      id: island.id,
+      preferredPosition: island.preferredPosition,
+      relatedTo: island.relatedTo,
+      territoryRadius: island.territoryRadius,
+    }),
+  ),
+);
+
+export const ISLANDS: IslandDefinition[] = WORLD_LAYOUT.items.map((layoutItem) => {
+  const visual = INITIAL_ISLANDS.find((island) => island.id === layoutItem.id)!;
+  return {
+    ...visual,
+    position: [layoutItem.position.x, 0, layoutItem.position.z],
+  };
+});
 
 export const ISLAND_BY_ID = Object.fromEntries(
   ISLANDS.map((island) => [island.id, island]),

@@ -1,7 +1,12 @@
 import { Image } from "expo-image";
+import { useSyncExternalStore } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { ISLAND_BY_ID, ISLANDS, IslandId } from "../data/islands";
+import {
+  getWorldViewSnapshot,
+  subscribeToWorldView,
+} from "../lib/world-view-store";
 
 type MapOverlayProps = {
   selectedIsland: IslandId | null;
@@ -16,6 +21,12 @@ export const MapOverlay = ({
   onClear,
   onCheckIn,
 }: MapOverlayProps) => {
+  const worldView = useSyncExternalStore(
+    subscribeToWorldView,
+    getWorldViewSnapshot,
+    getWorldViewSnapshot,
+  );
+
   if (selectedIsland) {
     const island = ISLAND_BY_ID[selectedIsland];
     return (
@@ -130,44 +141,53 @@ export const MapOverlay = ({
         />
       </View>
 
-      {ISLANDS.map((island) => (
-        <Pressable
-          key={island.id}
-          accessibilityRole="button"
-          accessibilityLabel={`Open ${island.name} island`}
-          onPress={() => onSelect(island.id)}
-          hitSlop={36}
-          style={({ pressed }) => ({
-            position: "absolute",
-            top: island.labelTop,
-            left: island.labelLeft,
-            paddingHorizontal: 15,
-            paddingVertical: 8,
-            borderRadius: 7,
-            borderCurve: "continuous",
-            backgroundColor: pressed ? "#845332" : "#9c673e",
-            borderWidth: 2,
-            borderColor: "#bd8a58",
-            transform: [
-              { rotate: island.labelRotation },
-              { scale: pressed ? 0.97 : 1 },
-            ],
-            boxShadow: "0 5px 12px rgba(67, 51, 38, 0.28)",
-          })}
-        >
-          <Text
-            style={{
-              color: "#fff7e8",
-              fontSize: island.id === "relationships" ? 15 : 17,
-              fontFamily: "Chalkboard SE",
-              fontWeight: "700",
-              letterSpacing: 0.1,
-            }}
+      {ISLANDS.map((island) => {
+        const point = worldView.islandPoints[island.id];
+        if (!point?.visible) return null;
+        const width = island.id === "relationships" ? 136 : 104;
+        return (
+          <Pressable
+            key={island.id}
+            accessibilityRole="button"
+            accessibilityLabel={`Open ${island.name} island`}
+            onPress={() => onSelect(island.id)}
+            hitSlop={30}
+            style={({ pressed }) => ({
+              position: "absolute",
+              top: point.y - 18,
+              left: point.x - width / 2,
+              width,
+              minHeight: 38,
+              paddingHorizontal: 12,
+              paddingVertical: 7,
+              borderRadius: 7,
+              borderCurve: "continuous",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: pressed ? "#845332" : "#9c673e",
+              borderWidth: 2,
+              borderColor: "#bd8a58",
+              transform: [
+                { rotate: island.labelRotation },
+                { scale: pressed ? 0.97 : 1 },
+              ],
+              boxShadow: "0 5px 12px rgba(67, 51, 38, 0.28)",
+            })}
           >
-            {island.name}
-          </Text>
-        </Pressable>
-      ))}
+            <Text
+              style={{
+                color: "#fff7e8",
+                fontSize: island.id === "relationships" ? 15 : 17,
+                fontFamily: "Chalkboard SE",
+                fontWeight: "700",
+                letterSpacing: 0.1,
+              }}
+            >
+              {island.name}
+            </Text>
+          </Pressable>
+        );
+      })}
 
       <Pressable
         accessibilityRole="button"
