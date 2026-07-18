@@ -18,11 +18,11 @@ Native API availability, email/password, Apple, the Convex JWT template or integ
 
 ## Result
 
-The repository is linked to Clerk application `mindland` and its development instance. Native API requests are enabled. Email/password and email-code sign-in are configured; a real native sign-in still needs end-to-end verification.
+The repository is linked to Clerk application `mindland` and its development instance. Native API requests are enabled. Email/password and email-code sign-in are configured. A later native test completed email/password sign-in, real JWT exchange with Convex, two-user data isolation, and session persistence.
 
-Apple appears as an enabled sign-in option, and the iOS build has the Apple sign-in entitlement for bundle `com.alimaa555.mindland`. Clerk has no registered iOS application, and the local Xcode project has no Development Team. Add the iOS application under Clerk's Native applications page using the Apple Developer Team ID and `com.alimaa555.mindland`, configure Xcode signing, then verify a real Apple sign-in.
+Apple appears as an enabled sign-in option. The local iOS configuration now uses Apple Team ID `WRRAJYP22V`, bundle `com.alimaa555.mindland`, and the Apple sign-in entitlement. The native button reaches Apple's system account prompt. A complete provider test still needs an Apple Account on the simulator or a real device, and production credentials need Apple Developer Program membership.
 
-The development instance has a `convex` JWT template with audience `convex`. Its shape matches the expected integration, while real token issuance and Convex acceptance remain to be verified through an authenticated session.
+The development instance has a `convex` JWT template with audience `convex`. Real Clerk token issuance and Convex acceptance passed through two authenticated native sessions.
 
 Two development-only Clerk test users were created after this read-only audit. They are reserved for the native two-user privacy pass and should be removed when the development proof is no longer useful.
 
@@ -32,7 +32,7 @@ Two development-only Clerk test users were created after this read-only audit. T
 
 `GET /environment?_is_native=true` returned a successful native environment response. Clerk documents that the same request returns `native_api_disabled` with HTTP 400 when Native API is off, so this confirms Native API is enabled. The response listed `password`, `email_code`, `oauth_apple`, and `oauth_token_apple` among the available first factors and preferred password sign-in.
 
-The pulled development config reported password authentication enabled and required, email enabled for sign-up/sign-in, and Apple enabled. Apple's `team_id`, `bundle_id`, `client_id`, and `key_id` fields were empty. Read-only dashboard inspection found no registered iOS application. Local inspection found the matching Apple entitlement in `ios/mindland/mindland.entitlements`, while the Xcode project has no `DEVELOPMENT_TEAM` configured.
+The pulled development config reported password authentication enabled and required, email enabled for sign-up/sign-in, and Apple enabled. At the time of the audit, Apple's `team_id`, `bundle_id`, `client_id`, and `key_id` fields were empty. The later local native build configured `DEVELOPMENT_TEAM = WRRAJYP22V` and generated the matching Apple entitlement. Clerk's shared development Apple setup is sufficient to open the native system prompt; production credentials remain pending.
 
 `GET /jwt_templates` returned one template named `convex` with claim `aud: convex`, a 3,600-second lifetime, and five seconds of allowed clock skew.
 

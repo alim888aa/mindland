@@ -70,8 +70,10 @@ The shell supports a normal AI-style conversation, island-specific three-to-four
 
 NativeWind 5 and Tailwind CSS 4 are configured for two-dimensional product screens alongside the existing WebGPU renderer. Clerk's native session gate is connected to Convex through `ConvexProviderWithClerk`. The development deployment validates Clerk JWTs, and temporary proof functions derive ownership from the verified server identity so the client cannot choose whose data it reads or writes.
 
-The rotated OpenAI key and Clerk issuer now live in Convex's server environment. Expo receives only public Clerk and Convex values. Anonymous backend calls are rejected, synthetic two-identity isolation passed, and the protected OpenAI server check passed. Two development-only Clerk users exist for the native end-to-end privacy test. An explicit development-only in-memory Clerk cache flag lets the ad-hoc simulator app reach Clerk's real email/password UI; builds without the flag continue to use the secure token cache. That disposable build did not retain an active session after password submission, so the real Clerk-user A/B pass remains unverified and a properly signed build is the next test path. Apple sign-in separately requires the user's Apple Developer Team ID.
+The rotated OpenAI key and Clerk issuer live in Convex's server environment. Expo receives only public Clerk and Convex values. Anonymous backend calls are rejected, the protected OpenAI server check passed, and real Clerk sessions now reach private Convex data. Two native development accounts proved A/B isolation: each user saw only their own marker. Clerk's secure token cache also preserved the active session and private record across an app restart.
 
-The final life-map schema, real Clerk-user isolation pass, complete user loop, and Apple sign-in remain unfinished. Apple verification requires the user's Apple Developer Team ID and native signing configuration.
+The Apple Team ID is `WRRAJYP22V`, the iOS bundle identifier is `com.alimaa555.mindland`, and the generated native project includes the Sign in with Apple entitlement. The Apple button reaches the native system prompt. Completing that provider test requires an Apple Account in the simulator or a real device, while production credentials require Apple Developer Program membership because the current Xcode team is a Personal Team.
+
+The final life-map schema, complete user loop, and production Apple sign-in remain unfinished.
 
 The current phase is [Phase 1: Initial loop](docs/phases/phase-1-initial-loop/README.md).

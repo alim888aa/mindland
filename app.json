@@ -8,8 +8,10 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
+      "appleTeamId": "WRRAJYP22V",
       "supportsTablet": true,
-      "bundleIdentifier": "com.alimaa555.mindland"
+      "bundleIdentifier": "com.alimaa555.mindland",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +27,7 @@
     },
     "plugins": [
       "@clerk/expo",
+      "expo-apple-authentication",
       "expo-asset",
       "expo-image",
       "expo-secure-store",

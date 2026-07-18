@@ -18,7 +18,7 @@ The complete loop works on an iPhone build with a real account and persistent us
 
 ## Progress
 
-The 3D map now uses variable world coordinates, small sparse starting islands, generated territories, camera-following labels, an expandable perimeter, and reachable bounded two-axis movement. The native daily check-in shell has local chat and questionnaire interactions. Lagoon Immersion is selected and now has a measured rendering and fallback policy. Clerk and the Convex development deployment are connected, and the temporary backend proof enforces private user ownership. The final life-map records, AI interpretation, and scored map changes remain to be built.
+The 3D map now uses variable world coordinates, small sparse starting islands, generated territories, camera-following labels, an expandable perimeter, and reachable bounded two-axis movement. The native daily check-in shell has local chat and questionnaire interactions. Lagoon Immersion is selected and now has a measured rendering and fallback policy. Native Clerk email/password sign-in, persisted sessions, real Convex JWT exchange, and two-user private record isolation are verified. Apple reaches its native system prompt, with the final provider test waiting on an Apple Account and production developer membership. The final life-map records, AI interpretation, and scored map changes remain to be built.
 
 ## Tasks
 
@@ -27,6 +27,8 @@ The 3D map now uses variable world coordinates, small sparse starting islands, g
 [Verify the private Convex foundation](tasks/00a-verify-private-convex-foundation.md)
 
 [Verify the Clerk development instance](tasks/00b-verify-clerk-development-instance.md)
+
+[Verify native Clerk end to end](tasks/00c-verify-native-clerk-end-to-end.md)
 
 [Define the life-map domain](tasks/01-define-life-map-domain.md)
 
