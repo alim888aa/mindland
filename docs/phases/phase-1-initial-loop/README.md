@@ -18,7 +18,7 @@ The complete loop works on an iPhone build with a real account and persistent us
 
 ## Progress
 
-The 3D map now uses variable world coordinates, smaller starting islands, generated territories, camera-following labels, an expandable perimeter, and bounded two-axis movement. A follow-up fix is making that movement reachable and the zero-activity islands genuinely small and sparse. The native daily check-in shell has local chat and questionnaire interactions. Lagoon Immersion is selected and now has a measured rendering and fallback policy; AI interpretation, persistence, and scored map changes remain to be built.
+The 3D map now uses variable world coordinates, small sparse starting islands, generated territories, camera-following labels, an expandable perimeter, and reachable bounded two-axis movement. The native daily check-in shell has local chat and questionnaire interactions. Lagoon Immersion is selected and now has a measured rendering and fallback policy. The Clerk native session gate compiles and installs in the iPhone simulator. Convex cloud setup, AI interpretation, persistent records, and scored map changes remain to be built.
 
 ## Tasks
 

@@ -64,10 +64,10 @@ The exact interview prompts, island-history experience, Convex schema, AI archit
 
 ## Current status
 
-The repository contains an Expo 57 prototype with a procedural 3D map, four distinct islands, territory lines, island zooming, and a NativeWind check-in shell. The map now derives island positions, territories, and outer bounds from variable island data. Its starting islands are smaller, labels follow the 3D camera, and the overview supports bounded horizontal and vertical movement. Simulator rendering and island zoom were verified; drag feel still needs a hands-on iPhone pass before its tuning values become product rules.
+The repository contains an Expo 57 prototype with a procedural 3D map, four distinct islands, territory lines, island zooming, and a NativeWind check-in shell. The map now derives island positions, territories, and outer bounds from variable island data. Its starting islands are small and bare, labels follow the 3D camera, and the overview supports bounded horizontal and vertical movement from the water, renderer, or labels. Simulator rendering and island zoom were verified; drag feel still needs a hands-on iPhone pass before its tuning values become product rules.
 
 The shell supports a normal AI-style conversation, island-specific three-to-four question samples, automatic choice advance, Skip, written and numeric inputs, and returning to the completed island. It currently uses local sample responses and does not yet interpret or persist activity. Lagoon Immersion is the selected iOS direction: the island world remains present behind the check-in, with native glass controls, a readable shared mist surface, and a completion reveal.
 
-NativeWind 5 and Tailwind CSS 4 are configured for two-dimensional product screens alongside the existing WebGPU renderer. The complete user loop and persistent data model are still unbuilt.
+NativeWind 5 and Tailwind CSS 4 are configured for two-dimensional product screens alongside the existing WebGPU renderer. Clerk's native session gate and secure token cache compile and install in the iPhone simulator. Convex and AI packages are present, while cloud deployment, Clerk-to-Convex identity, the complete user loop, and the persistent data model still need to be built.
 
 The current phase is [Phase 1: Initial loop](docs/phases/phase-1-initial-loop/README.md).
