@@ -20,11 +20,15 @@ The app now has a native Clerk gate. While Clerk restores a session it shows the
 
 Cloud deployment creation is paused because the Convex account belongs to five teams and the user must choose which one owns Mindland. Clerk's development instance has email and password enabled. Apple is enabled but its Team ID and native bundle registration are still blank, and the Clerk Convex integration has not yet created its JWT template.
 
+Expo must run with only the public Clerk key in its process. During simulator diagnosis, Expo's ignored local debug log copied every value from the root `.env`; that log was deleted and later servers used `EXPO_NO_DOTENV`. The exposed OpenAI and Clerk server keys must be rotated. The replacement OpenAI key belongs in Convex's server environment rather than Expo's root environment.
+
 ## Verification
 
 `clerk doctor --json` passed host execution, authentication, repository linking, application reachability, and environment checks. Read-only Clerk configuration confirmed email/password and Apple are enabled. The linked instance currently has no Convex JWT template.
 
 Expo prebuild applied the Clerk, SecureStore, WebGPU, and Apple-sign-in native configuration. CocoaPods installed 111 pods, including ClerkExpo and ClerkKit. A clean unsigned iPhone Simulator build compiled successfully with Xcode, installed into the dedicated Mindland simulator, and opened its native development launcher. Two independent Clerk reviews found no actionable code issues. A complete sign-in remains blocked on the Clerk dashboard's Native API and Apple Team configuration.
+
+The first Metro bundle completed successfully with 1,423 modules. An ad-hoc signed simulator copy reached the Clerk provider and no longer repeated the SecureStore entitlement error, then remained in Clerk's loading state pending the external Clerk configuration. The map drag cannot be verified through the authenticated shell until that gate can finish or the user approves a temporary development bypass.
 
 ## Commit
 

@@ -70,4 +70,6 @@ The shell supports a normal AI-style conversation, island-specific three-to-four
 
 NativeWind 5 and Tailwind CSS 4 are configured for two-dimensional product screens alongside the existing WebGPU renderer. Clerk's native session gate and secure token cache compile and install in the iPhone simulator. Convex and AI packages are present, while cloud deployment, Clerk-to-Convex identity, the complete user loop, and the persistent data model still need to be built.
 
+Server secrets must move to server-owned environments before backend work continues. Expo should receive only `EXPO_PUBLIC_` values. The current OpenAI and Clerk server keys require rotation after an ignored Expo debug log copied them during local diagnosis.
+
 The current phase is [Phase 1: Initial loop](docs/phases/phase-1-initial-loop/README.md).
