@@ -30,4 +30,4 @@ The first Metro bundle was unusually slow because the repository lives in a macO
 
 ## Commit
 
-Pending.
+`672b15e` (`feat: complete native Clerk authentication`)
