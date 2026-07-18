@@ -119,4 +119,4 @@ Reviewed the current renderer, scene update loop, pixel-ratio cap, water geometr
 
 ## Commit
 
-Pending.
+`5d9d0d2` — `docs: choose Lagoon and record architecture review`

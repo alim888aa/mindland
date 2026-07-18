@@ -26,4 +26,4 @@ Confirmed that the report file exists, contains all four before-and-after visual
 
 ## Commit
 
-Pending.
+`5d9d0d2` — `docs: choose Lagoon and record architecture review`

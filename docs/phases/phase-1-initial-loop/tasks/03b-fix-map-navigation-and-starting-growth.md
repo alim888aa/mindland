@@ -39,12 +39,13 @@ the ground plane and showed why the earlier fixed depth prevented vertical
 movement. All prototype islands now use the approved bare 42% starting scale.
 No banned React hooks were introduced.
 
-Simulator verification is still pending. The installed development build is
-available, but the Expo CLI currently exits inside its environment helper while
-Clerk and Convex dependencies are being changed in parallel. TypeScript and git
-diff checks also stalled without output during that concurrent dependency work,
-so they need to be rerun after the package installation settles.
+Simulator drag verification is still pending. The new Clerk-enabled native
+development build compiled, installed, and opened its launcher successfully,
+while Metro startup is delayed by unusually slow local package reads. Two independent code-review passes found no
+actionable issues in the responder hierarchy, camera limits, or starting-island
+rendering. TypeScript and focused diff checks passed after dependency work
+settled.
 
 ## Commit
 
-Pending.
+`64b112c` — `fix: make the island world draggable`
