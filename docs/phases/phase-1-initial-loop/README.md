@@ -18,11 +18,15 @@ The complete loop works on an iPhone build with a real account and persistent us
 
 ## Progress
 
-The 3D map now uses variable world coordinates, small sparse starting islands, generated territories, camera-following labels, an expandable perimeter, and reachable bounded two-axis movement. The native daily check-in shell has local chat and questionnaire interactions. Lagoon Immersion is selected and now has a measured rendering and fallback policy. The Clerk native session gate compiles and installs in the iPhone simulator. Convex cloud setup, AI interpretation, persistent records, and scored map changes remain to be built.
+The 3D map now uses variable world coordinates, small sparse starting islands, generated territories, camera-following labels, an expandable perimeter, and reachable bounded two-axis movement. The native daily check-in shell has local chat and questionnaire interactions. Lagoon Immersion is selected and now has a measured rendering and fallback policy. Clerk and the Convex development deployment are connected, and the temporary backend proof enforces private user ownership. The final life-map records, AI interpretation, and scored map changes remain to be built.
 
 ## Tasks
 
 [Build the Clerk and Convex foundation](tasks/00-build-clerk-and-convex-foundation.md)
+
+[Verify the private Convex foundation](tasks/00a-verify-private-convex-foundation.md)
+
+[Verify the Clerk development instance](tasks/00b-verify-clerk-development-instance.md)
 
 [Define the life-map domain](tasks/01-define-life-map-domain.md)
 
@@ -50,6 +54,8 @@ The 3D map now uses variable world coordinates, small sparse starting islands, g
 
 [Review codebase architecture](tasks/08-review-codebase-architecture.md)
 
+[Publish a readable architecture review](tasks/08a-publish-readable-architecture-review.md)
+
 ## Open questions
 
-The Convex schema, AI response format, privacy boundaries, sinking and resurfacing formulas, map expansion limits, and remaining screen details still need user decisions.
+The final Convex life-map schema, AI response format, sinking and resurfacing formulas, map expansion limits, and remaining screen details still need user decisions. The privacy boundary is decided: every user-owned record is scoped to the verified Clerk identity on the Convex server.
