@@ -67,4 +67,4 @@ claiming an end-to-end Clerk sign-in.
 
 ## Commit
 
-Pending.
+`13a982a` (`feat: connect Clerk to private Convex data`)

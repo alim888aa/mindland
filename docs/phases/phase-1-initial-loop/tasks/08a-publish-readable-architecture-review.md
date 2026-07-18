@@ -28,4 +28,4 @@ Confirmed that the report exists inside the repository, names current source pat
 
 ## Commit
 
-Pending.
+`acad3cf` (`docs: publish readable architecture review`)

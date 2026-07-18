@@ -42,4 +42,4 @@ Official Native API behavior reference: https://clerk.com/docs/guides/developmen
 
 ## Commit
 
-Not committed; this verification belongs to the primary agent's foundation slice.
+`13a982a` (`feat: connect Clerk to private Convex data`)
