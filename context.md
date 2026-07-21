@@ -98,4 +98,4 @@ A fresh post-repair onboarding-only reveal recording remains pending because the
 
 The current phase is [Phase 1: Initial loop](docs/phases/phase-1-initial-loop/README.md).
 
-Hackathon repository publication is in progress. The public-facing README now documents the product, judge testing path, local setup, architecture, verification, and the distinct roles of Codex and GPT-5.6. Local environment files, native build folders, large demo exports, and iCloud conflict copies are excluded from publication; the repository uses the MIT license.
+The hackathon repository is public at https://github.com/alim888aa/mindland. Its README documents the product, judge testing path, local setup, architecture, verification, and the distinct roles of Codex and GPT-5.6. Local environment files, native build folders, large demo exports, and iCloud conflict copies are excluded from publication; the repository uses the MIT license.

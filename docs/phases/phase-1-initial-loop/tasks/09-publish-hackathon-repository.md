@@ -1,6 +1,6 @@
 # Publish the hackathon repository
 
-Status: in-progress
+Status: completed
 
 Owner: primary-agent
 
@@ -16,12 +16,14 @@ The public repository has a correct open-source license, a judge-focused README,
 
 ## Result
 
-Pending publication.
+Mindland is published as a public repository at https://github.com/alim888aa/mindland. The repository includes the complete Expo app, private Convex backend, Clerk integration, automated tests, ADRs, phase documentation, agent skills, a corrected MIT license, and a judge-focused README.
+
+The README explains the product loop, fastest judge-testing path, local iOS setup, required public and server-only environment variables, architecture, verification commands, and the distinct ways Codex with GPT-5.6 Sol and the in-app GPT-5.6 Luna agent were used. Local secrets, native build output, 306 MB of demo recordings, and iCloud conflict copies remain ignored.
 
 ## Verification
 
-The source tree will be scanned for common secret formats, ignored environment files will be confirmed, TypeScript and the repository tests will pass, and the pushed repository will be checked through GitHub.
+`npx tsc --noEmit` passed. All 117 repository tests passed. `git diff --cached --check` passed, the Expo compatibility patch reapplied successfully, and common OpenAI, Clerk, AWS, and private-key secret patterns were absent from the staged tree. Git history contains no committed environment or credential files. GitHub displays the repository as Public.
 
 ## Commit
 
-Pending.
+`5a2350c` (`feat: complete Mindland hackathon demo`)
