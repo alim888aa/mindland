@@ -1,0 +1,34 @@
+diff --git a/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Coding/JavaScriptCodable+Date.swift b/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Coding/JavaScriptCodable+Date.swift
+index eb1cc94..a15439c 100644
+--- a/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Coding/JavaScriptCodable+Date.swift
++++ b/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Coding/JavaScriptCodable+Date.swift
+@@ -50,8 +50,13 @@ let maxJavaScriptDateMilliseconds: Double = 8_640_000_000_000_000
+ /// faithful to `new Date(number)`; the `Date`/string branches pass an already-clipped `getTime()` through.
+ @usableFromInline
+ func dateFromMilliseconds(_ milliseconds: Double) throws -> Date {
+-  guard milliseconds.isFinite, abs(milliseconds) <= maxJavaScriptDateMilliseconds else {
++  guard milliseconds.isFinite,
++    milliseconds >= -maxJavaScriptDateMilliseconds,
++    milliseconds <= maxJavaScriptDateMilliseconds else {
+     throw InvalidDateException()
+   }
+-  return Date(timeIntervalSince1970: milliseconds.rounded(.towardZero) / 1000.0)
++  let roundedMilliseconds: Double = milliseconds.rounded(
++    FloatingPointRoundingRule.towardZero
++  )
++  return Date(timeIntervalSince1970: roundedMilliseconds / 1000.0)
+ }
+diff --git a/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh b/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
+index 28d3249..3999c11 100755
+--- a/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
++++ b/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
+@@ -32,5 +32,6 @@ PACKAGE_NAME="ExpoModulesJSI"
+ CONFIGURATION="Release"
+-DERIVED_DATA_PATH="${PACKAGE_DIR}/.DerivedData"
+-SPM_BUILD_PATH="${PACKAGE_DIR}/.build"
+-SPM_WORKSPACE_PATH="${PACKAGE_DIR}/.swiftpm"
++LOCAL_BUILD_ROOT="${TMPDIR:-/tmp}/mindland-expo-modules-jsi-${UID}"
++DERIVED_DATA_PATH="${LOCAL_BUILD_ROOT}/DerivedData"
++SPM_BUILD_PATH="${LOCAL_BUILD_ROOT}/build"
++SPM_WORKSPACE_PATH="${LOCAL_BUILD_ROOT}/swiftpm"
+ BUILD_PRODUCTS_PATH="${DERIVED_DATA_PATH}/Build/Products"

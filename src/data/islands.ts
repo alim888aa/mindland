@@ -1,123 +1,286 @@
 import {
   createWorldLayout,
+  type WorldLayout,
   type WorldLayoutInput,
-  type WorldPoint,
-} from "../lib/world-layout";
+} from "../lib/world-layout.ts";
+import {
+  calculateIslandLandScale,
+  EMPTY_ISLAND_GROWTH,
+  growthVisualKey,
+  normalizeStoredIslandGrowth,
+  type IslandGrowthVisualState,
+  type StoredIslandGrowth,
+} from "../lib/island-growth-rendering.ts";
+import { LAND_GROWTH_POINT_CAP } from "../domain/island-growth.ts";
+import type { IslandQuestion } from "../lib/island-questionnaires.ts";
 
-export type IslandId = "health" | "relationships" | "work" | "learning";
+export type IslandId = string;
 
-type IslandVisualDefinition = {
-  id: IslandId;
+export type IslandVisualThemeKey =
+  | "health"
+  | "relationships"
+  | "work"
+  | "learning";
+
+export type OwnedIslandRecord = {
+  id: string;
+  islandKey: string;
   name: string;
-  preferredPosition: WorldPoint;
-  relatedTo: readonly IslandId[];
-  radius: number;
-  territoryRadius: number;
-  startingLandScale: number;
-  seed: number;
+  purpose: string;
+  visualThemeKey: IslandVisualThemeKey;
+  visualSeed: number;
+  createdAt: number;
+  questionnaire?: readonly IslandQuestion[] | null;
+};
+
+export type IslandGrowthRecord = StoredIslandGrowth;
+
+type IslandVisualTheme = {
   topColor: string;
   sandColor: string;
   rockColor: string;
   accentColor: string;
-  labelRotation: `${number}deg`;
   treeStyle: "pine" | "blossom" | "mixed" | "palm";
   density: number;
 };
 
-export type IslandDefinition = IslandVisualDefinition & {
+export type IslandDefinition = IslandVisualTheme & {
+  id: IslandId;
+  islandKey: string;
+  name: string;
+  purpose: string;
+  visualThemeKey: IslandVisualThemeKey;
   position: [number, number, number];
+  relatedTo: readonly IslandId[];
+  radius: number;
+  territoryRadius: number;
+  startingLandScale: number;
+  maximumLandScale: number;
+  landScale: number;
+  growth: IslandGrowthVisualState;
+  seed: number;
+  labelRotation: `${number}deg`;
+  isPreview: boolean;
+  questionnaire: readonly IslandQuestion[] | null;
 };
 
-const INITIAL_ISLANDS: IslandVisualDefinition[] = [
-  {
-    id: "health",
-    name: "Health",
-    preferredPosition: { x: -1.18, z: -0.55 },
-    relatedTo: ["relationships"],
-    radius: 1.27,
-    territoryRadius: 0.92,
-    startingLandScale: 0.42,
-    seed: 17,
+export type IslandTerritoryBounds = {
+  minX: number;
+  maxX: number;
+  minZ: number;
+  maxZ: number;
+};
+
+export type RuntimeIslandWorld = {
+  identityKey: string;
+  key: string;
+  islands: IslandDefinition[];
+  islandById: Readonly<Record<IslandId, IslandDefinition>>;
+  layout: WorldLayout<IslandId>;
+  territoryBoundsById: Readonly<Record<IslandId, IslandTerritoryBounds>>;
+  isPreview: boolean;
+};
+
+const ISLAND_RADIUS = 1.12;
+const TERRITORY_RADIUS = 1.12;
+// The terrain mesh has its own base radius. These scales make the rendered
+// shoreline occupy roughly 30% to 80% of the enlarged territory hexagon.
+const STARTING_LAND_SCALE = 0.42;
+const MAXIMUM_LAND_SCALE = 1.12;
+
+const VISUAL_THEMES: Record<IslandVisualThemeKey, IslandVisualTheme> = {
+  health: {
     topColor: "#88a950",
     sandColor: "#d8c789",
     rockColor: "#7f806e",
     accentColor: "#d5ef99",
-    labelRotation: "-3deg",
     treeStyle: "mixed",
     density: 14,
   },
-  {
-    id: "relationships",
-    name: "Relationships",
-    preferredPosition: { x: 1.16, z: -0.48 },
-    relatedTo: ["health"],
-    radius: 1.12,
-    territoryRadius: 0.88,
-    startingLandScale: 0.42,
-    seed: 29,
+  relationships: {
     topColor: "#b88a63",
     sandColor: "#e1bf89",
     rockColor: "#8d7263",
     accentColor: "#ee8f86",
-    labelRotation: "3deg",
     treeStyle: "blossom",
     density: 11,
   },
-  {
-    id: "work",
-    name: "Work",
-    preferredPosition: { x: -1.1, z: 2.22 },
-    relatedTo: ["learning"],
-    radius: 0.91,
-    territoryRadius: 0.82,
-    startingLandScale: 0.42,
-    seed: 43,
+  work: {
     topColor: "#829953",
     sandColor: "#cdbf8c",
     rockColor: "#74796b",
     accentColor: "#c6d79b",
-    labelRotation: "2deg",
     treeStyle: "pine",
     density: 8,
   },
-  {
-    id: "learning",
-    name: "Learning",
-    preferredPosition: { x: 1.15, z: 2.27 },
-    relatedTo: ["work"],
-    radius: 0.82,
-    territoryRadius: 0.79,
-    startingLandScale: 0.42,
-    seed: 61,
+  learning: {
     topColor: "#bca76b",
     sandColor: "#ead39a",
     rockColor: "#887b68",
     accentColor: "#f0ba67",
-    labelRotation: "3deg",
     treeStyle: "palm",
     density: 6,
   },
-];
+};
 
-export const WORLD_LAYOUT = createWorldLayout(
-  INITIAL_ISLANDS.map(
-    (island): WorldLayoutInput<IslandId> => ({
-      id: island.id,
-      preferredPosition: island.preferredPosition,
-      relatedTo: island.relatedTo,
-      territoryRadius: island.territoryRadius,
-    }),
-  ),
-);
+const labelRotationForSeed = (seed: number): `${number}deg` => {
+  const degrees = ((Math.abs(Math.trunc(seed)) % 7) - 3) as number;
+  return `${degrees}deg`;
+};
 
-export const ISLANDS: IslandDefinition[] = WORLD_LAYOUT.items.map((layoutItem) => {
-  const visual = INITIAL_ISLANDS.find((island) => island.id === layoutItem.id)!;
+const territoryBounds = (
+  layout: WorldLayout<IslandId>,
+): Record<IslandId, IslandTerritoryBounds> =>
+  Object.fromEntries(
+    layout.territories.map((territory) => [
+      territory.id,
+      territory.points.reduce<IslandTerritoryBounds>(
+        (value, point) => ({
+          minX: Math.min(value.minX, point.x),
+          maxX: Math.max(value.maxX, point.x),
+          minZ: Math.min(value.minZ, point.z),
+          maxZ: Math.max(value.maxZ, point.z),
+        }),
+        {
+          minX: Infinity,
+          maxX: -Infinity,
+          minZ: Infinity,
+          maxZ: -Infinity,
+        },
+      ),
+    ]),
+  );
+
+const makeWorld = (
+  records: readonly OwnedIslandRecord[],
+  isPreview: boolean,
+  growthRecords: readonly IslandGrowthRecord[],
+  growthStepsToMaximum: number | null,
+): RuntimeIslandWorld => {
+  const orderedRecords = [...records].sort(
+    (first, second) =>
+      first.createdAt - second.createdAt ||
+      first.islandKey.localeCompare(second.islandKey),
+  );
+  const layout = createWorldLayout(
+    orderedRecords.map(
+      (record): WorldLayoutInput<IslandId> => ({
+        id: record.id,
+        relatedTo: [],
+        territoryRadius: TERRITORY_RADIUS,
+      }),
+    ),
+  );
+  const recordById = Object.fromEntries(
+    orderedRecords.map((record) => [record.id, record]),
+  );
+  const growthByIslandId = new Map(
+    growthRecords.map((growth) => [growth.islandId, growth]),
+  );
+  const islands = layout.items.map((item): IslandDefinition => {
+    const record = recordById[item.id];
+    const theme = VISUAL_THEMES[record.visualThemeKey];
+    const growth = isPreview
+      ? EMPTY_ISLAND_GROWTH
+      : normalizeStoredIslandGrowth(growthByIslandId.get(record.id));
+    return {
+      ...theme,
+      id: record.id,
+      islandKey: record.islandKey,
+      name: record.name,
+      purpose: record.purpose,
+      visualThemeKey: record.visualThemeKey,
+      position: [item.position.x, 0, item.position.z],
+      relatedTo: [],
+      radius: ISLAND_RADIUS,
+      territoryRadius: TERRITORY_RADIUS,
+      startingLandScale: STARTING_LAND_SCALE,
+      maximumLandScale: MAXIMUM_LAND_SCALE,
+      landScale: calculateIslandLandScale({
+        growthStepCount: Math.min(
+          growth.lifetimePositivePoints,
+          LAND_GROWTH_POINT_CAP,
+        ),
+        startingLandScale: STARTING_LAND_SCALE,
+        maximumLandScale: MAXIMUM_LAND_SCALE,
+        growthStepsToMaximum,
+      }),
+      growth,
+      seed: record.visualSeed,
+      labelRotation: labelRotationForSeed(record.visualSeed),
+      isPreview,
+      questionnaire: record.questionnaire ?? null,
+    };
+  });
+  const islandById = Object.fromEntries(
+    islands.map((island) => [island.id, island]),
+  );
+  const sourceKey = orderedRecords
+    .map((record) => {
+      const growth = isPreview
+        ? EMPTY_ISLAND_GROWTH
+        : normalizeStoredIslandGrowth(growthByIslandId.get(record.id));
+      return `${record.id}:${record.visualThemeKey}:${record.visualSeed}:${record.name}:${growthVisualKey(growth)}`;
+    })
+    .join("|");
+
   return {
-    ...visual,
-    position: [layoutItem.position.x, 0, layoutItem.position.z],
+    identityKey: `${isPreview ? "preview" : "owned"}:${orderedRecords
+      .map((record) => record.id)
+      .join("|")}`,
+    key: `${isPreview ? "preview" : "owned"}:${sourceKey}`,
+    islands,
+    islandById,
+    layout,
+    territoryBoundsById: territoryBounds(layout),
+    isPreview,
   };
-});
+};
 
-export const ISLAND_BY_ID = Object.fromEntries(
-  ISLANDS.map((island) => [island.id, island]),
-) as Record<IslandId, IslandDefinition>;
+export const createRuntimeIslandWorld = (
+  records: readonly OwnedIslandRecord[],
+  growthRecords: readonly IslandGrowthRecord[] = [],
+  options: { growthStepsToMaximum: number | null } = {
+    growthStepsToMaximum: LAND_GROWTH_POINT_CAP,
+  },
+) => makeWorld(records, false, growthRecords, options.growthStepsToMaximum);
+
+export const createPreviewIslandWorld = (count: number) => {
+  const safeCount = Math.max(0, Math.min(8, Math.trunc(count)));
+  const themes = Object.keys(VISUAL_THEMES) as IslandVisualThemeKey[];
+  const records = Array.from({ length: safeCount }, (_, index) => ({
+    id: `preview-${index}`,
+    islandKey: `preview-${index}`,
+    name: "",
+    purpose: "",
+    visualThemeKey: themes[index % themes.length],
+    visualSeed: 7_919 + index * 104_729,
+    createdAt: index,
+    questionnaire: null,
+  }));
+  return makeWorld(records, true, [], null);
+};
+
+export const selectVisibleIslandWorld = (
+  records: readonly OwnedIslandRecord[],
+  options: { onboardingActive: boolean; candidateCount: number },
+  growthRecords: readonly IslandGrowthRecord[] = [],
+) => {
+  if (records.length > 0) {
+    return createRuntimeIslandWorld(records, growthRecords);
+  }
+  if (options.onboardingActive) {
+    return createPreviewIslandWorld(options.candidateCount);
+  }
+  return createRuntimeIslandWorld([]);
+};
+
+export const needsIslandMaterializationRepair = (value: {
+  interviewStatus: "interviewing" | "readyToCreate" | "revealed" | "completed";
+  candidateCount: number;
+  ownedIslandCount: number;
+}) =>
+  (value.interviewStatus === "revealed" ||
+    value.interviewStatus === "completed") &&
+  value.candidateCount > 0 &&
+  value.ownedIslandCount === 0;

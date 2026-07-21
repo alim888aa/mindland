@@ -2,7 +2,7 @@
 
 Status: in-progress
 
-Owner: map-navigation-agent
+Owner: primary-agent
 
 Depends on: Build the expandable world map
 
@@ -45,6 +45,20 @@ while Metro startup is delayed by unusually slow local package reads. Two indepe
 actionable issues in the responder hierarchy, camera limits, or starting-island
 rendering. TypeScript and focused diff checks passed after dependency work
 settled.
+
+Hands-on feedback found three remaining camera problems: the initial overview
+was offset toward one vertical limit, island focus framed the small starter land
+instead of its territory, and leaving an island snapped the viewing direction
+while its position was still moving. The follow-up keeps the previous overview
+pose, centers the starting pan within its real limits, frames the selected
+territory polygon, and interpolates the same look target in both directions.
+
+The camera now has one owner for position and viewing direction. Territory
+framing and overview limits are recalculated after viewport changes, while the
+render loop reuses its projection vector to avoid creating camera garbage every
+frame. TypeScript passes. The iPhone 16 simulator shows the full Health
+territory and returns to the four-island overview successfully. Final drag feel
+still needs the user's hands-on pass in the running simulator.
 
 ## Commit
 

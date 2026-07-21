@@ -1,8 +1,8 @@
 # Define the life-map domain
 
-Status: planned
+Status: in-progress
 
-Owner: unassigned
+Owner: primary-agent
 
 ## Outcome
 

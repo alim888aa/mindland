@@ -49,6 +49,8 @@ export const makeWebGPURenderer = (
 ) =>
   new THREE.WebGPURenderer({
     antialias,
-    canvas: new ReactNativeCanvas(context.canvas as NativeCanvas) as HTMLCanvasElement,
+    canvas: new ReactNativeCanvas(
+      context.canvas as unknown as NativeCanvas,
+    ) as unknown as HTMLCanvasElement,
     context,
   });

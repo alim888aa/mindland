@@ -1,4 +1,4 @@
-# ADR 0004: Score island change in five-point milestones
+# ADR 0004: Grow land first, then add contextual props
 
 Status: accepted
 
@@ -10,7 +10,9 @@ Daily activities need to produce visible progress without making land growth or 
 
 ## Decision
 
-Give each island at most one summarized positive node and one lifetime positive point per calendar day. Combine all supportive activities for that island and day inside the node while preserving the underlying activity details. Duration and repeated occurrences do not multiply points.
+Give each island one summarized positive node per calendar day. For the hackathon build, distinct supportive activities may add up to twelve lifetime positive points to the island on that day, while the node and history remain summarized and preserve their underlying activity details. Revisit this accelerated cap after the demo.
+
+Start land at 30% of its territory footprint. Each of the first five lifetime positive points adds ten percentage points of land, reaching the 80% cap on point five. The sixth and every later positive point adds one context-fitting prop selected from the approved catalogue instead of increasing land further.
 
 Give each island at most one negative point per calendar day containing harmful activity for that topic. Every five negative points creates one visible rock. Preserve the original activity entry, retain corrections in history, and allow accidental submissions to be undone for five minutes.
 
@@ -22,7 +24,7 @@ A submerged island resurfaces as soon as its lifetime positive-point count becom
 
 ## Reason
 
-Daily summaries prevent repetitive activity from flooding the map with nodes while the underlying history stays detailed. The asymmetric weighting is intentional: a supportive day adds one lifetime point, while five harmful days are needed to create one equally weighted rock. This favors lifetime growth. Preserving corrections protects the map from AI misunderstandings without hiding the history.
+Daily summaries prevent repetitive activity from flooding the map with nodes while the underlying history stays detailed. The temporary twelve-point cap lets judges see the full growth loop in one session, while later props keep progress legible after land reaches its cap. Negative scoring remains slow and capped daily. Preserving corrections protects the map from AI misunderstandings without hiding the history.
 
 ## Consequences
 

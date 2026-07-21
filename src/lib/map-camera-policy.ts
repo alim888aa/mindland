@@ -100,3 +100,29 @@ export const getCameraPanLimits = (
     maximumZ: vertical.maximum,
   };
 };
+
+export const getCenteredNavigationBounds = (
+  camera: THREE.PerspectiveCamera,
+  worldBounds: WorldBounds,
+): WorldBounds => {
+  const footprint = getCameraGroundFootprint(camera);
+  const footprintCenterX = (footprint.minX + footprint.maxX) / 2;
+  const footprintCenterZ = (footprint.minZ + footprint.maxZ) / 2;
+  const worldCenterX = (worldBounds.minX + worldBounds.maxX) / 2;
+  const worldCenterZ = (worldBounds.minZ + worldBounds.maxZ) / 2;
+  let { minX, maxX, minZ, maxZ } = worldBounds;
+
+  if (worldCenterX > footprintCenterX) {
+    minX = Math.min(minX, 2 * footprintCenterX - maxX);
+  } else {
+    maxX = Math.max(maxX, 2 * footprintCenterX - minX);
+  }
+
+  if (worldCenterZ > footprintCenterZ) {
+    minZ = Math.min(minZ, 2 * footprintCenterZ - maxZ);
+  } else {
+    maxZ = Math.max(maxZ, 2 * footprintCenterZ - minZ);
+  }
+
+  return { minX, maxX, minZ, maxZ };
+};

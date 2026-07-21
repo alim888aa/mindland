@@ -1,0 +1,35 @@
+# Dependencies are restored from package-lock.json by EAS.
+node_modules/
+node_modules.dehydrated/
+
+# Local Expo and native build output.
+.expo/
+dist/
+web-build/
+/ios/
+/android/
+
+# Local credentials and environment files. Public build values live in EAS.
+.env
+.env*.local
+*.p8
+*.p12
+*.pem
+*.key
+*.mobileprovision
+
+# Repository-only material that is not part of the app bundle.
+.git/
+.agents/
+.claude/
+artifacts/
+design-reference/
+docs/
+tests/
+
+# Machine and compiler output.
+.DS_Store
+*.tsbuildinfo
+npm-debug.*
+yarn-debug.*
+yarn-error.*

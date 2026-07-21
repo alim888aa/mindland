@@ -16,15 +16,15 @@ Refactor the prototype around world coordinates, make the starting islands visib
 
 ## Done when
 
-The user can navigate the world smoothly on iPhone, encounter a clear outer perimeter, and add related islands without collisions while existing island positions and territories adjust coherently.
+The user can navigate the world smoothly on iPhone, reach consistent invisible bounds, and add related islands without collisions while existing island positions and territories adjust coherently.
 
 ## Result
 
-Implemented the current slice around explicit world coordinates. The renderer now consumes a deterministic variable-island layout, scales the four initial islands down in the overview, draws generated Voronoi-like territory borders and an expandable outer perimeter, projects island labels from the 3D camera, and supports bounded two-axis drag movement with eased following and release momentum.
+Implemented the current slice around explicit world coordinates. The renderer now consumes a deterministic variable-island layout, scales the four initial islands down in the overview, draws generated territory borders, projects island labels from the 3D camera, and supports bounded two-axis drag movement with eased following and release momentum. A later approved visual change removed the drawn outer perimeter while preserving its expandable invisible camera bounds.
 
 The layout keeps related islands near each other, pushes overlapping territories apart, and recalculates world bounds and territory cells when another island is supplied. Current numeric values for camera speed, inertia, visible camera footprint, edge padding, spacing, iteration count, territory radius, and overview scale are prototype tuning constants. They still need simulator tuning before becoming product rules.
 
-Reviewer follow-up added a deterministic collision-only cleanup pass after all attraction forces, a pure minimum-clearance helper, smooth selection from the currently panned camera, and cleared pan state during that transition. Territory rendering now draws each shared straight Voronoi edge once and draws the perimeter once, avoiding stacked transparent geometry and curved-line divergence.
+Reviewer follow-up added a deterministic collision-only cleanup pass after all attraction forces, a pure minimum-clearance helper, smooth selection from the currently panned camera, and cleared pan state during that transition. Territory rendering now draws each shared edge once, avoiding stacked transparent geometry and curved-line divergence. The world perimeter is enforced by the camera without rendering a harsh outer line.
 
 ## Verification
 

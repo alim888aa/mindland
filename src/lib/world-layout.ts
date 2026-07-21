@@ -28,6 +28,7 @@ export type TerritoryCell<Id extends string = string> = {
 
 export type WorldLayout<Id extends string = string> = {
   bounds: WorldBounds;
+  territoryBounds: WorldBounds;
   items: WorldLayoutItem<Id>[];
   territories: TerritoryCell<Id>[];
 };
@@ -45,242 +46,224 @@ export const getMinimumTerritoryClearance = <Id extends string>(
         Math.hypot(
           second.position.x - first.position.x,
           second.position.z - first.position.z,
-        ) -
-          first.territoryRadius -
-          second.territoryRadius,
+        ) - first.territoryRadius - second.territoryRadius,
       );
     }
   }
   return minimum;
 };
 
-// These values only tune the current prototype. They are deliberately kept out
-// of product/domain data until the map has been tested with more island counts.
+// Product-sized values remain together while the visual scale is tuned.
 export const WORLD_LAYOUT_PROTOTYPE = {
-  edgePadding: 1.45,
-  minimumWidth: 9.2,
-  minimumDepth: 16,
-  collisionGap: 0.48,
-  relatedDistance: 2.1,
-  layoutPasses: 56,
+  emptyWidth: 9.2,
+  emptyDepth: 12,
+  collisionGap: 0.18,
+  relatedDistance: 2.42,
+  futureIslandReserveInTerritoryDiameters: 1,
+  territoryFootprintScale: 1.25,
 } as const;
 
-const deterministicAngle = (id: string) => {
-  let hash = 0;
-  for (let index = 0; index < id.length; index += 1) {
-    hash = (hash * 31 + id.charCodeAt(index)) | 0;
-  }
-  return ((Math.abs(hash) % 360) * Math.PI) / 180;
+type LatticePoint = readonly [column: number, row: number];
+
+const HEX_DIRECTIONS: readonly LatticePoint[] = [
+  [1, 0],
+  [1, -1],
+  [0, -1],
+  [-1, 0],
+  [-1, 1],
+  [0, 1],
+];
+
+// Connected equal-cell shapes keep small worlds compact. Five deliberately
+// uses the approved center-and-four-neighbours star.
+const LATTICE_TEMPLATES: Record<number, readonly LatticePoint[]> = {
+  1: [[0, 0]],
+  2: [[0, 0], [1, 0]],
+  // A shared-edge triangle reads as a small circular cluster in portrait:
+  // two cells above and one centered below after the layout is recentered.
+  3: [[-1, 0], [0, 0], [-1, 1]],
+  4: [[0, 0], [1, 0], [0, 1], [1, 1]],
+  5: [[0, 0], [0, -1], [1, 0], [0, 1], [-1, 0]],
+  6: [[-1, 0], [0, 0], [1, 0], [-1, 1], [0, 1], [1, 1]],
+  7: [[0, 0], [0, -1], [1, 0], [0, 1], [-1, 0], [1, -1], [-1, 1]],
+  8: [[0, 0], [0, -1], [1, 0], [0, 1], [-1, 0], [1, -1], [1, 1], [-1, 1]],
 };
 
-const initialPosition = <Id extends string>(
-  input: WorldLayoutInput<Id>,
-  positioned: Map<Id, WorldPoint>,
-  index: number,
-) => {
-  if (input.preferredPosition) return { ...input.preferredPosition };
-
-  const relatedPosition = input.relatedTo
-    ?.map((id) => positioned.get(id))
-    .find((position): position is WorldPoint => Boolean(position));
-  const angle = deterministicAngle(input.id);
-  if (relatedPosition) {
-    return {
-      x: relatedPosition.x + Math.cos(angle) * WORLD_LAYOUT_PROTOTYPE.relatedDistance,
-      z: relatedPosition.z + Math.sin(angle) * WORLD_LAYOUT_PROTOTYPE.relatedDistance,
-    };
-  }
-
-  const column = index % 3;
-  const row = Math.floor(index / 3);
-  return { x: (column - 1) * 2.35, z: row * 2.5 };
-};
-
-const clipPolygon = (
-  polygon: WorldPoint[],
-  normalX: number,
-  normalZ: number,
-  limit: number,
-) => {
-  const result: WorldPoint[] = [];
-  for (let index = 0; index < polygon.length; index += 1) {
-    const current = polygon[index];
-    const previous = polygon[(index + polygon.length - 1) % polygon.length];
-    const currentDistance = current.x * normalX + current.z * normalZ - limit;
-    const previousDistance = previous.x * normalX + previous.z * normalZ - limit;
-    const currentInside = currentDistance <= 0.0001;
-    const previousInside = previousDistance <= 0.0001;
-
-    if (currentInside !== previousInside) {
-      const denominator = previousDistance - currentDistance;
-      const amount = denominator === 0 ? 0 : previousDistance / denominator;
-      result.push({
-        x: previous.x + (current.x - previous.x) * amount,
-        z: previous.z + (current.z - previous.z) * amount,
-      });
+const generatedTemplate = (count: number): LatticePoint[] => {
+  const result: LatticePoint[] = [[0, 0]];
+  for (let radius = 1; result.length < count; radius += 1) {
+    let column = -radius;
+    let row = radius;
+    for (const [stepColumn, stepRow] of HEX_DIRECTIONS) {
+      for (let step = 0; step < radius && result.length < count; step += 1) {
+        result.push([column, row]);
+        column += stepColumn;
+        row += stepRow;
+      }
     }
-    if (currentInside) result.push(current);
   }
   return result;
 };
 
-const makeTerritories = <Id extends string>(
-  items: WorldLayoutItem<Id>[],
-  bounds: WorldBounds,
-) =>
-  items.map((item): TerritoryCell<Id> => {
-    let points: WorldPoint[] = [
-      { x: bounds.minX, z: bounds.minZ },
-      { x: bounds.maxX, z: bounds.minZ },
-      { x: bounds.maxX, z: bounds.maxZ },
-      { x: bounds.minX, z: bounds.maxZ },
+const areNeighbours = (first: LatticePoint, second: LatticePoint) => {
+  const column = first[0] - second[0];
+  const row = first[1] - second[1];
+  return (
+    (Math.abs(column) + Math.abs(row) + Math.abs(column + row)) / 2 === 1
+  );
+};
+
+const assignLatticePoints = <Id extends string>(
+  inputs: readonly WorldLayoutInput<Id>[],
+) => {
+  const template = [...(LATTICE_TEMPLATES[inputs.length] ?? generatedTemplate(inputs.length))];
+  const assigned = template.map((_, index) => index);
+
+  // A newly discovered related island takes an available neighbouring cell.
+  // Swapping only with later entries keeps earlier placements stable.
+  inputs.forEach((input, inputIndex) => {
+    const relatedIndex = input.relatedTo
+      ?.map((id) => inputs.findIndex((candidate) => candidate.id === id))
+      .find((index) => index !== undefined && index >= 0 && index < inputIndex);
+    if (relatedIndex === undefined) return;
+
+    const relatedPoint = template[assigned[relatedIndex]];
+    if (areNeighbours(template[assigned[inputIndex]], relatedPoint)) return;
+    const neighbourIndex = assigned.findIndex(
+      (templateIndex, candidateIndex) =>
+        candidateIndex > inputIndex &&
+        areNeighbours(template[templateIndex], relatedPoint),
+    );
+    if (neighbourIndex < 0) return;
+    [assigned[inputIndex], assigned[neighbourIndex]] = [
+      assigned[neighbourIndex],
+      assigned[inputIndex],
     ];
+  });
 
-    for (const other of items) {
-      if (other.id === item.id) continue;
-      const normalX = other.position.x - item.position.x;
-      const normalZ = other.position.z - item.position.z;
-      const limit =
-        (other.position.x * other.position.x +
-          other.position.z * other.position.z -
-          item.position.x * item.position.x -
-          item.position.z * item.position.z) /
-        2;
-      points = clipPolygon(points, normalX, normalZ, limit);
-    }
+  return assigned.map((templateIndex) => template[templateIndex]);
+};
 
-    return { id: item.id, points };
+export const getTerritoryArea = (points: readonly WorldPoint[]) => {
+  let doubledArea = 0;
+  for (let index = 0; index < points.length; index += 1) {
+    const current = points[index];
+    const next = points[(index + 1) % points.length];
+    doubledArea += current.x * next.z - next.x * current.z;
+  }
+  return Math.abs(doubledArea) / 2;
+};
+
+export const getTerritoryCentroid = (points: readonly WorldPoint[]) => {
+  if (points.length === 0) return { x: 0, z: 0 };
+  let signedDoubledArea = 0;
+  let weightedX = 0;
+  let weightedZ = 0;
+  for (let index = 0; index < points.length; index += 1) {
+    const current = points[index];
+    const next = points[(index + 1) % points.length];
+    const cross = current.x * next.z - next.x * current.z;
+    signedDoubledArea += cross;
+    weightedX += (current.x + next.x) * cross;
+    weightedZ += (current.z + next.z) * cross;
+  }
+  if (Math.abs(signedDoubledArea) < 0.0001) {
+    return points.reduce(
+      (center, point) => ({
+        x: center.x + point.x / points.length,
+        z: center.z + point.z / points.length,
+      }),
+      { x: 0, z: 0 },
+    );
+  }
+  return {
+    x: weightedX / (3 * signedDoubledArea),
+    z: weightedZ / (3 * signedDoubledArea),
+  };
+};
+
+const boundsAroundTerritories = <Id extends string>(
+  territories: readonly TerritoryCell<Id>[],
+) =>
+  territories.reduce<WorldBounds>(
+    (bounds, territory) =>
+      territory.points.reduce<WorldBounds>(
+        (cellBounds, point) => ({
+          minX: Math.min(cellBounds.minX, point.x),
+          maxX: Math.max(cellBounds.maxX, point.x),
+          minZ: Math.min(cellBounds.minZ, point.z),
+          maxZ: Math.max(cellBounds.maxZ, point.z),
+        }),
+        bounds,
+      ),
+    { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity },
+  );
+
+const makeHexagon = (center: WorldPoint, radius: number): WorldPoint[] =>
+  Array.from({ length: 6 }, (_, index) => {
+    const angle = Math.PI / 6 + (Math.PI * index) / 3;
+    return {
+      x: center.x + Math.cos(angle) * radius,
+      z: center.z + Math.sin(angle) * radius,
+    };
   });
 
 export const createWorldLayout = <Id extends string>(
   inputs: readonly WorldLayoutInput<Id>[],
 ): WorldLayout<Id> => {
   if (inputs.length === 0) {
-    const halfWidth = WORLD_LAYOUT_PROTOTYPE.minimumWidth / 2;
-    const halfDepth = WORLD_LAYOUT_PROTOTYPE.minimumDepth / 2;
-    return {
-      bounds: { minX: -halfWidth, maxX: halfWidth, minZ: -halfDepth, maxZ: halfDepth },
-      items: [],
-      territories: [],
+    const halfWidth = WORLD_LAYOUT_PROTOTYPE.emptyWidth / 2;
+    const halfDepth = WORLD_LAYOUT_PROTOTYPE.emptyDepth / 2;
+    const bounds = {
+      minX: -halfWidth,
+      maxX: halfWidth,
+      minZ: -halfDepth,
+      maxZ: halfDepth,
     };
+    return { bounds, territoryBounds: bounds, items: [], territories: [] };
   }
 
-  const positioned = new Map<Id, WorldPoint>();
-  const items = inputs.map((input, index): WorldLayoutItem<Id> => {
-    const position = initialPosition(input, positioned, index);
-    positioned.set(input.id, position);
-    return { ...input, position };
-  });
-
-  for (let pass = 0; pass < WORLD_LAYOUT_PROTOTYPE.layoutPasses; pass += 1) {
-    for (let firstIndex = 0; firstIndex < items.length; firstIndex += 1) {
-      for (let secondIndex = firstIndex + 1; secondIndex < items.length; secondIndex += 1) {
-        const first = items[firstIndex];
-        const second = items[secondIndex];
-        let deltaX = second.position.x - first.position.x;
-        let deltaZ = second.position.z - first.position.z;
-        let distance = Math.hypot(deltaX, deltaZ);
-        if (distance < 0.0001) {
-          const angle = deterministicAngle(`${first.id}:${second.id}`);
-          deltaX = Math.cos(angle) * 0.01;
-          deltaZ = Math.sin(angle) * 0.01;
-          distance = 0.01;
-        }
-
-        const minimumDistance =
-          first.territoryRadius +
-          second.territoryRadius +
-          WORLD_LAYOUT_PROTOTYPE.collisionGap;
-        if (distance < minimumDistance) {
-          const correction = (minimumDistance - distance) * 0.52;
-          const shiftX = (deltaX / distance) * correction;
-          const shiftZ = (deltaZ / distance) * correction;
-          first.position.x -= shiftX;
-          first.position.z -= shiftZ;
-          second.position.x += shiftX;
-          second.position.z += shiftZ;
-        }
-
-        const related =
-          first.relatedTo?.includes(second.id) || second.relatedTo?.includes(first.id);
-        if (related && distance > WORLD_LAYOUT_PROTOTYPE.relatedDistance) {
-          const correction =
-            (distance - WORLD_LAYOUT_PROTOTYPE.relatedDistance) * 0.045;
-          const shiftX = (deltaX / distance) * correction;
-          const shiftZ = (deltaZ / distance) * correction;
-          first.position.x += shiftX;
-          first.position.z += shiftZ;
-          second.position.x -= shiftX;
-          second.position.z -= shiftZ;
-        }
-      }
-    }
-
-    for (const item of items) {
-      if (!item.preferredPosition) continue;
-      item.position.x += (item.preferredPosition.x - item.position.x) * 0.025;
-      item.position.z += (item.preferredPosition.z - item.position.z) * 0.025;
-    }
-  }
-
-  // Attraction and preferred-position forces can reintroduce tiny overlaps on
-  // their final pass. Finish with collision-only passes so the returned layout
-  // always owns the clearance guarantee.
-  for (let pass = 0; pass < 24; pass += 1) {
-    for (let firstIndex = 0; firstIndex < items.length; firstIndex += 1) {
-      for (let secondIndex = firstIndex + 1; secondIndex < items.length; secondIndex += 1) {
-        const first = items[firstIndex];
-        const second = items[secondIndex];
-        let deltaX = second.position.x - first.position.x;
-        let deltaZ = second.position.z - first.position.z;
-        let distance = Math.hypot(deltaX, deltaZ);
-        if (distance < 0.0001) {
-          const angle = deterministicAngle(`${first.id}:${second.id}`);
-          deltaX = Math.cos(angle) * 0.01;
-          deltaZ = Math.sin(angle) * 0.01;
-          distance = 0.01;
-        }
-        const required =
-          first.territoryRadius +
-          second.territoryRadius +
-          WORLD_LAYOUT_PROTOTYPE.collisionGap;
-        if (distance >= required) continue;
-        const correction = (required - distance) / 2 + 0.0001;
-        const shiftX = (deltaX / distance) * correction;
-        const shiftZ = (deltaZ / distance) * correction;
-        first.position.x -= shiftX;
-        first.position.z -= shiftZ;
-        second.position.x += shiftX;
-        second.position.z += shiftZ;
-      }
-    }
-  }
-
-  const extents = items.reduce(
-    (value, item) => ({
-      minX: Math.min(value.minX, item.position.x - item.territoryRadius),
-      maxX: Math.max(value.maxX, item.position.x + item.territoryRadius),
-      minZ: Math.min(value.minZ, item.position.z - item.territoryRadius),
-      maxZ: Math.max(value.maxZ, item.position.z + item.territoryRadius),
+  const largestRadius = Math.max(...inputs.map((input) => input.territoryRadius));
+  const effectiveTerritoryRadius =
+    largestRadius * WORLD_LAYOUT_PROTOTYPE.territoryFootprintScale;
+  const cellCenterDistance =
+    effectiveTerritoryRadius * 2 + WORLD_LAYOUT_PROTOTYPE.collisionGap;
+  const hexagonRadius = cellCenterDistance / Math.sqrt(3);
+  const latticePoints = assignLatticePoints(inputs);
+  const rawPositions = latticePoints.map(([column, row]) => ({
+    x: Math.sqrt(3) * hexagonRadius * (column + row / 2),
+    z: 1.5 * hexagonRadius * row,
+  }));
+  const center = rawPositions.reduce(
+    (sum, position) => ({
+      x: sum.x + position.x / rawPositions.length,
+      z: sum.z + position.z / rawPositions.length,
     }),
-    { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity },
+    { x: 0, z: 0 },
   );
-  const centerX = (extents.minX + extents.maxX) / 2;
-  const centerZ = (extents.minZ + extents.maxZ) / 2;
-  const width = Math.max(
-    WORLD_LAYOUT_PROTOTYPE.minimumWidth,
-    extents.maxX - extents.minX + WORLD_LAYOUT_PROTOTYPE.edgePadding * 2,
-  );
-  const depth = Math.max(
-    WORLD_LAYOUT_PROTOTYPE.minimumDepth,
-    extents.maxZ - extents.minZ + WORLD_LAYOUT_PROTOTYPE.edgePadding * 2,
-  );
+  const positions = rawPositions.map((position) => ({
+    x: position.x - center.x,
+    z: position.z - center.z,
+  }));
+  const items = inputs.map((input, index): WorldLayoutItem<Id> => ({
+    ...input,
+    position: positions[index],
+  }));
+  const territories = items.map((item): TerritoryCell<Id> => ({
+    id: item.id,
+    points: makeHexagon(item.position, hexagonRadius),
+  }));
+  const territoryBounds = boundsAroundTerritories(territories);
+  const reserve =
+    effectiveTerritoryRadius *
+    2 *
+    WORLD_LAYOUT_PROTOTYPE.futureIslandReserveInTerritoryDiameters;
   const bounds = {
-    minX: centerX - width / 2,
-    maxX: centerX + width / 2,
-    minZ: centerZ - depth / 2,
-    maxZ: centerZ + depth / 2,
+    minX: territoryBounds.minX - reserve,
+    maxX: territoryBounds.maxX + reserve,
+    minZ: territoryBounds.minZ - reserve,
+    maxZ: territoryBounds.maxZ + reserve,
   };
 
-  return { items, bounds, territories: makeTerritories(items, bounds) };
+  return { items, bounds, territoryBounds, territories };
 };

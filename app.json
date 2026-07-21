@@ -11,7 +11,10 @@
       "appleTeamId": "WRRAJYP22V",
       "supportsTablet": true,
       "bundleIdentifier": "com.alimaa555.mindland",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +35,12 @@
       "expo-image",
       "expo-secure-store",
       "react-native-webgpu"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "cdf4a9d3-be5f-4097-9b0e-0fdebb6fab17"
+      }
+    },
+    "owner": "alimaa555"
   }
 }

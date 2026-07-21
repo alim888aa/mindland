@@ -2,24 +2,68 @@ import { Image } from "expo-image";
 import { useSyncExternalStore } from "react";
 import { Pressable, Text, View } from "react-native";
 
-import { ISLAND_BY_ID, ISLANDS, IslandId } from "../data/islands";
+import type { IslandId, RuntimeIslandWorld } from "../data/islands";
 import {
   getWorldViewSnapshot,
   subscribeToWorldView,
 } from "../lib/world-view-store";
+import { AccountButton, ClearMapGlass } from "./account-button";
 
 type MapOverlayProps = {
+  islandWorld: RuntimeIslandWorld;
   selectedIsland: IslandId | null;
   onSelect: (id: IslandId) => void;
-  onClear: () => void;
   onCheckIn: () => void;
+  onOpenInfo: (id: IslandId) => void;
 };
 
+const CheckInControl = ({ onCheckIn }: { onCheckIn: () => void }) => (
+  <ClearMapGlass
+    style={{
+      minWidth: 144,
+      height: 52,
+      borderRadius: 26,
+      borderCurve: "continuous",
+      boxShadow: "0 7px 22px rgba(53, 88, 84, 0.24)",
+    }}
+  >
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Start daily check in"
+      onPress={onCheckIn}
+      style={({ pressed }) => ({
+        flex: 1,
+        flexDirection: "row",
+        gap: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        opacity: pressed ? 0.72 : 1,
+      })}
+    >
+      <Image
+        source="sf:heart.fill"
+        style={{ width: 19, height: 19 }}
+        tintColor="#e77c58"
+      />
+      <Text style={{ color: "#365753", fontSize: 17, fontWeight: "800" }}>
+        Check in
+      </Text>
+    </Pressable>
+  </ClearMapGlass>
+);
+
+const CheckInButton = ({ onCheckIn }: { onCheckIn: () => void }) => (
+  <View style={{ position: "absolute", bottom: 16, alignSelf: "center" }}>
+    <CheckInControl onCheckIn={onCheckIn} />
+  </View>
+);
+
 export const MapOverlay = ({
+  islandWorld,
   selectedIsland,
   onSelect,
-  onClear,
   onCheckIn,
+  onOpenInfo,
 }: MapOverlayProps) => {
   const worldView = useSyncExternalStore(
     subscribeToWorldView,
@@ -28,90 +72,66 @@ export const MapOverlay = ({
   );
 
   if (selectedIsland) {
-    const island = ISLAND_BY_ID[selectedIsland];
+    const island = islandWorld.islandById[selectedIsland];
+    if (!island) return null;
     return (
       <View pointerEvents="box-none" style={{ position: "absolute", inset: 0 }}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Back to full map"
-          onPress={onClear}
-          style={({ pressed }) => ({
-            position: "absolute",
-            top: 58,
-            left: 20,
-            minHeight: 44,
-            paddingHorizontal: 17,
-            borderRadius: 22,
-            borderCurve: "continuous",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: pressed ? "#f6e6c8" : "#fff3dc",
-            boxShadow: "0 5px 18px rgba(55, 81, 76, 0.2)",
-          })}
-        >
-          <Text style={{ color: "#5d5145", fontSize: 16, fontWeight: "700" }}>
-            Back to map
-          </Text>
-        </Pressable>
-
         <View
           style={{
             position: "absolute",
             top: 62,
             alignSelf: "center",
-            paddingHorizontal: 22,
-            paddingVertical: 10,
-            borderRadius: 8,
-            borderCurve: "continuous",
-            backgroundColor: "#9a663d",
-            borderWidth: 2,
-            borderColor: "#bc8958",
-            transform: [{ rotate: "1deg" }],
-            boxShadow: "0 5px 12px rgba(73, 55, 42, 0.24)",
+            paddingHorizontal: 18,
+            paddingVertical: 8,
           }}
         >
-          <Text style={{ color: "#fff7e9", fontSize: 22, fontWeight: "800" }}>
+          <Text
+            style={{
+              color: "#fafffd",
+              fontSize: 22,
+              fontWeight: "800",
+              textShadowColor: "rgba(24, 72, 69, 0.72)",
+              textShadowOffset: { width: 0, height: 2 },
+              textShadowRadius: 9,
+            }}
+          >
             {island.name}
           </Text>
         </View>
-
         <View
           style={{
             position: "absolute",
-            bottom: 47,
-            left: 24,
-            right: 24,
+            bottom: 16,
+            alignSelf: "center",
             flexDirection: "row",
-            gap: 12,
+            alignItems: "center",
+            gap: 10,
           }}
         >
-          {[
-            ["Summary", "A quick view of this island"],
-            ["History", "See how it has changed"],
-          ].map(([title, subtitle]) => (
+          <ClearMapGlass
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: 26,
+              borderCurve: "continuous",
+              boxShadow: "0 7px 22px rgba(53, 88, 84, 0.2)",
+            }}
+          >
             <Pressable
-              key={title}
+              accessibilityLabel={`Open ${island.name} summary and history`}
               accessibilityRole="button"
+              onPress={() => onOpenInfo(selectedIsland)}
               style={({ pressed }) => ({
                 flex: 1,
-                padding: 15,
-                gap: 3,
-                borderRadius: 18,
-                borderCurve: "continuous",
-                backgroundColor: pressed
-                  ? "rgba(255, 242, 218, 0.96)"
-                  : "rgba(255, 248, 232, 0.9)",
-                boxShadow: "0 7px 22px rgba(45, 93, 94, 0.18)",
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: pressed ? 0.68 : 1,
               })}
             >
-              <Text style={{ color: "#554b40", fontSize: 16, fontWeight: "800" }}>
-                {title}
-              </Text>
-              <Text style={{ color: "#7c7064", fontSize: 12, lineHeight: 16 }}>
-                {subtitle}
-              </Text>
+              <Image source="sf:book.pages" style={{ width: 20, height: 20 }} tintColor="#365753" />
             </Pressable>
-          ))}
+          </ClearMapGlass>
+          <CheckInControl onCheckIn={onCheckIn} />
         </View>
       </View>
     );
@@ -119,32 +139,41 @@ export const MapOverlay = ({
 
   return (
     <View pointerEvents="box-none" style={{ position: "absolute", inset: 0 }}>
-      <View
-        style={{
-          position: "absolute",
-          top: 56,
-          right: 22,
-          width: 46,
-          height: 46,
-          borderRadius: 23,
-          borderCurve: "continuous",
-          backgroundColor: "rgba(255, 244, 221, 0.9)",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 4px 14px rgba(52, 91, 87, 0.18)",
-        }}
-      >
-        <Image
-          source="sf:location.north.fill"
-          style={{ width: 22, height: 22 }}
-          tintColor="#d67652"
-        />
-      </View>
+      <AccountButton />
 
-      {ISLANDS.map((island) => {
+      {islandWorld.islands.map((island) => {
         const point = worldView.islandPoints[island.id];
         if (!point?.visible) return null;
-        const width = island.id === "relationships" ? 136 : 104;
+        const landGrowthRatio = island.landScale / 0.42;
+        const touchSize = Math.min(
+          156,
+          Math.max(72, 76 * worldView.labelScale * landGrowthRatio),
+        );
+        return (
+          <Pressable
+            accessible={false}
+            collapsable={false}
+            hitSlop={6}
+            key={`land-${island.id}`}
+            onPress={() => onSelect(island.id)}
+            style={({ pressed }) => ({
+              position: "absolute",
+              top: point.y - touchSize / 2,
+              left: point.x - touchSize / 2,
+              width: touchSize,
+              height: touchSize,
+              borderRadius: touchSize / 2,
+              transform: [{ scale: pressed ? 0.97 : 1 }],
+            })}
+          />
+        );
+      })}
+
+      {islandWorld.islands.map((island) => {
+        if (!island.name) return null;
+        const point = worldView.islandPoints[island.id];
+        if (!point?.visible || !worldView.labelsVisible) return null;
+        const width = Math.min(168, Math.max(92, island.name.length * 10 + 32));
         return (
           <Pressable
             key={island.id}
@@ -154,79 +183,43 @@ export const MapOverlay = ({
             hitSlop={30}
             style={({ pressed }) => ({
               position: "absolute",
-              top: point.y - 18,
+              top: point.y - 58,
               left: point.x - width / 2,
               width,
               minHeight: 38,
               paddingHorizontal: 12,
               paddingVertical: 7,
-              borderRadius: 7,
-              borderCurve: "continuous",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: pressed ? "#845332" : "#9c673e",
-              borderWidth: 2,
-              borderColor: "#bd8a58",
               transform: [
                 { rotate: island.labelRotation },
-                { scale: pressed ? 0.97 : 1 },
+                {
+                  scale:
+                    worldView.labelScale * (pressed ? 0.97 : 1),
+                },
               ],
-              boxShadow: "0 5px 12px rgba(67, 51, 38, 0.28)",
             })}
           >
-            <Text
-              style={{
-                color: "#fff7e8",
-                fontSize: island.id === "relationships" ? 15 : 17,
-                fontFamily: "Chalkboard SE",
-                fontWeight: "700",
-                letterSpacing: 0.1,
-              }}
-            >
-              {island.name}
-            </Text>
+            {({ pressed }) => (
+              <Text
+                style={{
+                  color: pressed ? "#dffff8" : "#fafffd",
+                  fontSize: island.name.length > 13 ? 15 : 17,
+                  fontWeight: "800",
+                  letterSpacing: 0.2,
+                  textShadowColor: "rgba(18, 70, 68, 0.88)",
+                  textShadowOffset: { width: 0, height: 2 },
+                  textShadowRadius: 8,
+                }}
+              >
+                {island.name}
+              </Text>
+            )}
           </Pressable>
         );
       })}
 
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Start daily check in"
-        onPress={onCheckIn}
-        style={({ pressed }) => ({
-          position: "absolute",
-          bottom: 16,
-          alignSelf: "center",
-          minWidth: 144,
-          height: 52,
-          borderRadius: 26,
-          borderCurve: "continuous",
-          backgroundColor: pressed ? "#f8e3c2" : "#fff0d4",
-          flexDirection: "row",
-          gap: 10,
-          alignItems: "center",
-          justifyContent: "center",
-          borderWidth: 1,
-          borderColor: "rgba(130, 98, 70, 0.14)",
-          boxShadow: "0 7px 22px rgba(53, 88, 84, 0.24)",
-        })}
-      >
-        <Image
-          source="sf:heart.fill"
-          style={{ width: 19, height: 19 }}
-          tintColor="#e77c58"
-        />
-        <Text
-          style={{
-            color: "#554b42",
-            fontFamily: "Chalkboard SE",
-            fontSize: 17,
-            fontWeight: "700",
-          }}
-        >
-          Check in
-        </Text>
-      </Pressable>
+      <CheckInButton onCheckIn={onCheckIn} />
     </View>
   );
 };

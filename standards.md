@@ -29,3 +29,7 @@ The main map should feel like a living expandable world with the user’s initia
 Prioritize legibility, responsive touch targets, smooth motion, and stable frame pacing. Visual richness should degrade gracefully on weaker devices.
 
 Preserve the warm, playful miniature-island direction established by the selected design reference. Ask before making a significant visual change.
+
+Use floating softly glowing text for island names. Map controls, including Check in, account, Summary, and History, share one clear native Liquid Glass family with accessible fallbacks.
+
+During AI conversation, keep the world readable through clear glass without mist. Reserve mist for short calculation and map-change transitions. Stream assistant text with a restrained magical glow and progressive letter reveal, with accessible reduced-motion behavior.

@@ -28,12 +28,15 @@ const convex = new ConvexReactClient(convexUrl);
 const MindlandRoot = () =>
   createElement(
     ClerkProvider,
-    { publishableKey, tokenCache: clerkTokenCache },
-    createElement(
-      ConvexProviderWithClerk,
-      { client: convex, useAuth },
-      createElement(App),
-    ),
+    {
+      publishableKey,
+      tokenCache: clerkTokenCache,
+      children: createElement(ConvexProviderWithClerk, {
+        client: convex,
+        useAuth,
+        children: createElement(App),
+      }),
+    },
   );
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

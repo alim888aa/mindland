@@ -3,6 +3,18 @@ const { withNativewind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
+config.resolver.blockList = [
+  ...(Array.isArray(config.resolver.blockList)
+    ? config.resolver.blockList
+    : config.resolver.blockList
+      ? [config.resolver.blockList]
+      : []),
+  /node_modules\.dehydrated\/.*$/,
+  /ios\/Pods\/.*$/,
+  /ios\/build\/.*$/,
+  /node_modules\/expo-modules-jsi\/apple\/\.DerivedData\/.*$/,
+];
+
 config.resolver.resolveRequest = (context, moduleName, platform) =>
   context.resolveRequest(
     context,

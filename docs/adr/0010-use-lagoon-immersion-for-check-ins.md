@@ -10,7 +10,9 @@ The first native check-in shell feels visually disconnected from Mindland's livi
 
 ## Decision
 
-Use Lagoon Immersion. A selected island remains visually present behind the check-in conversation or questionnaire. Native glass is reserved for compact controls and the composer, while readable message content sits on a shared mist surface. Completing a check-in reveals the island change beneath it.
+Use Lagoon Immersion. Daily check-in opens as the same full-screen Liquid Glass and mist shell used by onboarding, with the complete map visible beneath it. Its opening chat shows island names as guided-check-in shortcuts alongside the conversational composer. Choosing an island smoothly focuses that island behind the glass and opens its questionnaire. Chat and questionnaires share the shell, while only questionnaires show a numberless progress bar. Completing a check-in clears the glass and mist to reveal the changed island beneath it.
+
+During conversational check-in, the AI asks whether the user has anything else to add. A confirming response begins calculation and the reveal automatically, without requiring a separate completion button.
 
 ## Reason
 
